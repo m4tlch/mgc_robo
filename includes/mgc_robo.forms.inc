@@ -4,30 +4,42 @@ function mgc_robo_form($form, $form_state) {
   $header = array(
     'User'             => t('Учитель'),
     'CoursesUpdate'    => t('Обновление курса'),
+    'LessonsUpdate'    => t('Обновление урока'),
     'PupilsActivation' => t('Активация ученика'),
     'TaskChecked'      => t('Проверка задания'),
   );
 
-  $rows     = array();
-  $teachers = mgc_get_teachers();
-  //$records      = mgc_get_records();
-  $qty_per_day  = 0;
+  $rows         = array();
+  $teachers     = mgc_get_teachers();
   $current_date = date('Y-m');
-  $email_array  = array();
-  $user_email   = '';
+
   if ($teachers) {
     foreach ($teachers as $key => $teacher) {
       $last_updated_course = mgc_get_last_updated_node('course', $teacher->uid);
       if ($last_updated_course) {
-        $course_update = $last_updated_course['title'] . ' ' . date('Y-m-h', $last_updated_course['changed']);
+        $course_update = date('Y-m-h', $last_updated_course['changed']);
       }
       else {
-        $course_update = 'Нет курса';
+        $course_update = '-';
       }
-      $stop                         = 'Stop';
+      $last_updated_lesson = mgc_get_last_updated_node('lesson', $teacher->uid);
+      if ($last_updated_lesson) {
+        $lesson_update = date('Y-m-h', $last_updated_lesson['changed']);
+      }
+      else {
+        $lesson_update = '-';
+      }
+
+      if (mgc_user_has_curator_role($teacher)) {
+        $role = ' (куратор)';
+      }
+      else {
+        $role = '';
+      }
       $rows['key-' . $teacher->uid] = array(
-        'User'             => $teacher->name,
+        'User'             => $teacher->name . $role,
         'CoursesUpdate'    => $course_update,
+        'LessonsUpdate'    => $lesson_update,
         'PupilsActivation' => $current_date,
         'TaskChecked'      => $current_date,
       );

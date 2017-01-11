@@ -31,11 +31,6 @@ function mgc_get_last_updated_node($type, $uid) {
   $node  = $query->fetchAssoc();
 
   return $node;
-  $result = db_query_range("SELECT n.nid FROM {node} n ORDER BY n.created DESC", array(), 0, 1);
-
-  while ($nid = db_result($result)) {
-    $nodes[] = node_load($nid);
-  }
 }
 
 function mgc_get_nodes_by_type($type, $uid) {

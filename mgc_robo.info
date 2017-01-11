@@ -1,0 +1,4 @@
+name = MGC Robokassa module - tables, pages and stuff
+package = mgc
+version = 7.x-1.0
+core = 7.x

@@ -1,0 +1,17 @@
+<?php
+require_once('includes/mgc_robo.forms.inc');
+require_once('includes/mgc_robo.getters.inc');
+require_once('includes/mgc_robo.helpers.inc');
+require_once('includes/mgc_robo.pages.inc');
+
+function mgc_robo_menu() {
+  $items['stats/teachers'] = array(
+    'title'            => 'Статистика по учителям',
+    'page callback'    => 'mgc_robo_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo'],
+    'type'             => MENU_CALLBACK,
+  );
+
+  return $items;
+}

@@ -1,0 +1,155 @@
+<?php
+/*function mgc_ai_schema() {
+  $schema['mgc_ai_transactions'] = array(
+    'fields'      => array(
+      'id'      => array(
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'user_id' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'roistat' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'length'   => 11,
+      ),
+      'name'    => array(
+        'type'        => 'varchar',
+        'length'      => '2000',
+        'default'     => '',
+        'description' => 'Человекочитаемое название сделки. Используется в интерфейсе Roistat.',
+      ),
+      'amount'  => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'days'    => array(
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+        'not null'    => FALSE,
+        'length'      => 11,
+        'description' => 'Кол-во купленных дней',
+      ),
+      'created' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'status'  => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+    ),
+    'primary key' => array('id', 'user_id'),
+  );
+  $schema['mgc_roistat_statuses']       = array(
+    'fields'      => array(
+      'id'   => array(
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'name' => array(
+        'type'        => 'varchar',
+        'length'      => '255',
+        'default'     => '',
+        'description' => 'Текстовое описнаие статуса сделки. Используется в интерфейсе Roistat.',
+      ),
+      'type' => array(
+        'type'        => 'varchar',
+        'length'      => '255',
+        'default'     => '',
+        'description' => 'Текстовое описнаие типа сделки. Используется в интерфейсе Roistat.',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+function mgc_ai_update_7101()
+{
+  $schema['mgc_send_to_roistat']             = array(
+    'fields'      => array(
+      'id'      => array(
+        'type'     => 'serial',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'user_id' => array(
+        'type'     => 'int',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'status'  => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('id', 'user_id'),
+  );
+  $schema['mgc_create_null_deal_to_roistat'] = array(
+    'fields'      => array(
+      'id'      => array(
+        'type'     => 'serial',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'user_id' => array(
+        'type'     => 'int',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'status'  => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('id', 'user_id'),
+  );
+  $schema['mgc_send_to_getresponse']         = array(
+    'fields'      => array(
+      'id'      => array(
+        'type'     => 'serial',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'user_id' => array(
+        'type'     => 'int',
+        'unsigned' => true,
+        'not null' => true,
+        'length'   => 11,
+      ),
+      'status'  => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('id', 'user_id'),
+  );
+  db_create_table('mgc_send_to_roistat', $schema['mgc_send_to_roistat']);
+  db_create_table('mgc_send_to_getresponse',
+    $schema['mgc_send_to_getresponse']);
+  db_create_table('mgc_create_null_deal_to_roistat',
+    $schema['mgc_create_null_deal_to_roistat']);
+}*/

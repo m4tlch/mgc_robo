@@ -1,51 +1,26 @@
 <?php
-/*function mgc_ai_schema() {
-  $schema['mgc_ai_transactions'] = array(
+function mgc_robo_schema() {
+  $schema['mgc_pupil_activation'] = array(
     'fields'      => array(
-      'id'      => array(
+      'id'         => array(
         'type'     => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'user_id' => array(
+      'user_id'    => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'roistat' => array(
-        'type'     => 'int',
-        'unsigned' => TRUE,
-        'not null' => FALSE,
-        'length'   => 11,
-      ),
-      'name'    => array(
-        'type'        => 'varchar',
-        'length'      => '2000',
-        'default'     => '',
-        'description' => 'Человекочитаемое название сделки. Используется в интерфейсе Roistat.',
-      ),
-      'amount'  => array(
+      'teacher_id' => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'days'    => array(
-        'type'        => 'int',
-        'unsigned'    => TRUE,
-        'not null'    => FALSE,
-        'length'      => 11,
-        'description' => 'Кол-во купленных дней',
-      ),
-      'created' => array(
-        'type'     => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'length'   => 11,
-      ),
-      'status'  => array(
+      'created'    => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -54,7 +29,42 @@
     ),
     'primary key' => array('id', 'user_id'),
   );
-  $schema['mgc_roistat_statuses']       = array(
+  $schema['mgc_task_progress_update'] = array(
+    'fields'      => array(
+      'id'         => array(
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'user_id'    => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'teacher_id' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'progress_id' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'created'    => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+    ),
+    'primary key' => array('id', 'user_id'),
+  );
+/*  $schema['mgc_roistat_statuses'] = array(
     'fields'      => array(
       'id'   => array(
         'type'     => 'serial',
@@ -76,29 +86,29 @@
       ),
     ),
     'primary key' => array('id'),
-  );
+  );*/
   return $schema;
 }
-function mgc_ai_update_7101()
-{
+
+/*function mgc_ai_update_7101() {
   $schema['mgc_send_to_roistat']             = array(
     'fields'      => array(
       'id'      => array(
         'type'     => 'serial',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'user_id' => array(
         'type'     => 'int',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'status'  => array(
         'type'     => 'varchar',
         'length'   => 255,
-        'not null' => true,
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('id', 'user_id'),
@@ -107,20 +117,20 @@ function mgc_ai_update_7101()
     'fields'      => array(
       'id'      => array(
         'type'     => 'serial',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'user_id' => array(
         'type'     => 'int',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'status'  => array(
         'type'     => 'varchar',
         'length'   => 255,
-        'not null' => true,
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('id', 'user_id'),
@@ -129,27 +139,25 @@ function mgc_ai_update_7101()
     'fields'      => array(
       'id'      => array(
         'type'     => 'serial',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'user_id' => array(
         'type'     => 'int',
-        'unsigned' => true,
-        'not null' => true,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
         'length'   => 11,
       ),
       'status'  => array(
         'type'     => 'varchar',
         'length'   => 255,
-        'not null' => true,
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('id', 'user_id'),
   );
   db_create_table('mgc_send_to_roistat', $schema['mgc_send_to_roistat']);
-  db_create_table('mgc_send_to_getresponse',
-    $schema['mgc_send_to_getresponse']);
-  db_create_table('mgc_create_null_deal_to_roistat',
-    $schema['mgc_create_null_deal_to_roistat']);
+  db_create_table('mgc_send_to_getresponse', $schema['mgc_send_to_getresponse']);
+  db_create_table('mgc_create_null_deal_to_roistat', $schema['mgc_create_null_deal_to_roistat']);
 }*/

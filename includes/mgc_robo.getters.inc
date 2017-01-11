@@ -20,17 +20,41 @@ function mgc_get_records() {
   return $query;
 }
 
+function mgc_get_last_activation($teacher_id) {
+  $query      = db_select("mgc_pupil_activation", "m")
+    ->fields("m", array("created"))
+    ->condition("teacher_id", $teacher_id, "=")
+    ->orderBy("created", "DESC")
+    ->range(0, 1)
+    ->execute();
+  $activation = $query->fetchAssoc();
+
+  return $activation;
+}
+
 function mgc_get_last_updated_node($type, $uid) {
-  $query = db_select("node", "n")// select from the node table
-  ->fields("n", array("nid", "title", "changed"))// fields nid, title
-  ->condition("type", $type, "=")// where the node type = page
-  ->condition("uid", $uid, "=")// where the node type = page
-  ->orderBy("changed", "DESC")// order by the newest
-  ->range(0, 1)// select only 10 records
-  ->execute(); // execute the query
+  $query = db_select("node", "n")
+    ->fields("n", array("nid", "title", "changed"))
+    ->condition("type", $type, "=")
+    ->condition("uid", $uid, "=")
+    ->orderBy("changed", "DESC")
+    ->range(0, 1)
+    ->execute();
   $node  = $query->fetchAssoc();
 
   return $node;
+}
+
+function mgc_get_last_progress($teacher_id) {
+  $query    = db_select("mgc_task_progress_update", "m")
+    ->fields("m", array("created"))
+    ->condition("teacher_id", $teacher_id, "=")
+    ->orderBy("created", "DESC")
+    ->range(0, 1)
+    ->execute();
+  $progress = $query->fetchAssoc();
+
+  return $progress;
 }
 
 function mgc_get_nodes_by_type($type, $uid) {

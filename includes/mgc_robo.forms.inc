@@ -17,17 +17,34 @@ function mgc_robo_form($form, $form_state) {
     foreach ($teachers as $key => $teacher) {
       $last_updated_course = mgc_get_last_updated_node('course', $teacher->uid);
       if ($last_updated_course) {
-        $course_update = date('Y-m-h', $last_updated_course['changed']);
+        $course_update = date('Y-m-d H:i:s', $last_updated_course['changed']);
       }
       else {
         $course_update = '-';
       }
+
       $last_updated_lesson = mgc_get_last_updated_node('lesson', $teacher->uid);
       if ($last_updated_lesson) {
-        $lesson_update = date('Y-m-h', $last_updated_lesson['changed']);
+        $lesson_update = date('Y-m-d H:i:s', $last_updated_lesson['changed']);
       }
       else {
         $lesson_update = '-';
+      }
+
+      $pupil_activation = mgc_get_last_activation($teacher->uid);
+      if ($pupil_activation) {
+        $activation_update = date('Y-m-d H:i:s', $pupil_activation['created']);
+      }
+      else {
+        $activation_update = '-';
+      }
+
+      $progress = mgc_get_last_progress($teacher->uid);
+      if ($progress) {
+        $progress_update = date('Y-m-d H:i:s', $progress['created']);
+      }
+      else {
+        $progress_update = '-';
       }
 
       if (mgc_user_has_curator_role($teacher)) {
@@ -40,8 +57,8 @@ function mgc_robo_form($form, $form_state) {
         'User'             => $teacher->name . $role,
         'CoursesUpdate'    => $course_update,
         'LessonsUpdate'    => $lesson_update,
-        'PupilsActivation' => $current_date,
-        'TaskChecked'      => $current_date,
+        'PupilsActivation' => $activation_update,
+        'TaskChecked'      => $progress_update,
       );
     }
   }

@@ -1,1 +1,19 @@
 <?php
+function mgc_cached_teachers_data($reset = FALSE) {
+  global $language;
+  $langcode = $language->language;
+
+  $data = &drupal_static(__FUNCTION__, NULL, $reset);
+
+  if (!isset($data) || $reset) {
+    if (!$reset && ($cache = cache_get("teachers_table:$langcode")) && !empty($cache->data) && REQUEST_TIME < $cache->expire) {
+      $data = $cache->data;
+    }
+    else {
+      $data = mgc_get_teachers();
+      cache_set("teachers_table:$langcode", $data, 'cache',
+        REQUEST_TIME + (1 * 60 * 60)); //stores in cache table and expires after 1 hour
+    }
+  }
+  return $data;
+}

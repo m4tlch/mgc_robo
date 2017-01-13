@@ -12,7 +12,7 @@ function mgc_cached_teachers_data($reset = FALSE) {
     else {
       $data = mgc_get_teachers();
       cache_set("teachers_table:$langcode", $data, 'cache',
-        REQUEST_TIME + (1 * 60 * 60)); //stores in cache table and expires after 1 hour
+        REQUEST_TIME + MGC_TEACHERS_CACHE_EXPIRE); //stores in cache table and expires after 1 hour
     }
   }
   return $data;

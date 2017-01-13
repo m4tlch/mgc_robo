@@ -1,20 +1,29 @@
 <?php
+require_once('includes/config.inc');
 require_once('includes/mgc_robo.forms.inc');
 require_once('includes/mgc_robo.getters.inc');
 require_once('includes/mgc_robo.helpers.inc');
 require_once('includes/mgc_robo.pages.inc');
 
 function mgc_robo_menu() {
-  $items['stats/teachers']              = array(
+  $items['stats/teachers'] = array(
     'title'            => 'Статистика по учителям',
-    'page callback'    => 'mgc_robo_page',
+    'page callback'    => 'mgc_stats_teachers_page',
     'access callback'  => 'mgc_robo_access',
     'access arguments' => ['view robo'],
     'type'             => MENU_CALLBACK,
   );
+
   $items['stats/teachers/autocomplete'] = array(
     'page callback'    => 'mgc_get_user_search_autocomplete',
     'page arguments'   => array(3),
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['robo/teachers']               = array(
+    'title'            => 'Robokassa по учителям',
+    'page callback'    => 'mgc_robo_teachers_page',
     'access callback'  => 'mgc_robo_access',
     'access arguments' => ['view robo'],
     'type'             => MENU_CALLBACK,
@@ -27,9 +36,16 @@ function mgc_robo_theme() {
   $path = drupal_get_path('module', 'mgc_robo') . '/templates';
 
   return array(
-    'mgc_robo_page' => array(
+    'mgc_stats_teachers_page_theme' => array(
       'path'      => $path,
-      'template'  => 'mgc-robo-page',
+      'template'  => 'mgc-stats-teachers-page',
+      'variables' => array(
+        'image_path' => '',
+      ),
+    ),
+    'mgc_robo_teachers_page'        => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-teachers-page',
       'variables' => array(
         'image_path' => '',
       ),

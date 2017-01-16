@@ -1,9 +1,7 @@
-<div class="ai-wrapper">
-    <div class="ai-form-wrapper">
+<div class="mgc-stats-teachers-form-wrapper">
+    <div class="mgc-form-wrapper">
       <?php
-      $robo_form = drupal_get_form('mgc_robo_form');
-      $robo_form = drupal_render($robo_form);
-      print $robo_form;
+      mgc_print_form('mgc_stats_teachers_form');
       ?>
     </div>
 </div>

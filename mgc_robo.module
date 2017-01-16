@@ -1,9 +1,9 @@
 <?php
-require_once('includes/config.inc');
-require_once('includes/mgc_robo.forms.inc');
-require_once('includes/mgc_robo.getters.inc');
-require_once('includes/mgc_robo.helpers.inc');
-require_once('includes/mgc_robo.pages.inc');
+require_once __DIR__ . '/includes/config.inc';
+require_once __DIR__ . '/includes/mgc_robo.forms.inc';
+require_once __DIR__ . '/includes/mgc_robo.getters.inc';
+require_once __DIR__ . '/includes/mgc_robo.helpers.inc';
+require_once __DIR__ . '/includes/mgc_robo.pages.inc';
 
 function mgc_robo_menu() {
   $items['stats/teachers'] = array(
@@ -28,6 +28,13 @@ function mgc_robo_menu() {
     'access arguments' => ['view robo'],
     'type'             => MENU_CALLBACK,
   );
+  $items['set-tariff/%user']            = array(
+    'page callback'     => 'mgc_robo_set_tariff_page',
+    'page arguments'    => array(1),
+    'type'              => MENU_CALLBACK,
+    'access callback'   => TRUE,
+    'delivery callback' => 'drupal_json_output',
+  );
 
   return $items;
 }
@@ -44,6 +51,13 @@ function mgc_robo_theme() {
       ),
     ),
     'mgc_robo_teachers_page'        => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-teachers-page',
+      'variables' => array(
+        'image_path' => '',
+      ),
+    ),
+    'mgc_robo_set_tariff_page'        => array(
       'path'      => $path,
       'template'  => 'mgc-robo-teachers-page',
       'variables' => array(

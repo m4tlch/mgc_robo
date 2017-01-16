@@ -17,3 +17,9 @@ function mgc_cached_teachers_data($reset = FALSE) {
   }
   return $data;
 }
+
+function mgc_print_form($form_name) {
+  $form = drupal_get_form($form_name);
+  $form = drupal_render($form);
+  print $form;
+}

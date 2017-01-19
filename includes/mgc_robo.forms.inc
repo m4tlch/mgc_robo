@@ -17,17 +17,21 @@ function mgc_stats_teachers_form($form, $form_state) {
     if (isset($form_state['values']['mail']) && $form_state['values']['mail'] !== '') {
       foreach ($teachers as $key => $teacher) {
         if ($teacher->mail == $form_state['values']['mail']) {
-          $last_updated_course = mgc_get_last_updated_node('course', $teacher->uid);
+          $last_updated_course = mgc_get_last_updated_node('course',
+            $teacher->uid);
           if ($last_updated_course) {
-            $course_update = date('Y-m-d H:i:s', $last_updated_course['changed']);
+            $course_update = date('Y-m-d H:i:s',
+              $last_updated_course['changed']);
           }
           else {
             $course_update = '-';
           }
 
-          $last_updated_lesson = mgc_get_last_updated_node('lesson', $teacher->uid);
+          $last_updated_lesson = mgc_get_last_updated_node('lesson',
+            $teacher->uid);
           if ($last_updated_lesson) {
-            $lesson_update = date('Y-m-d H:i:s', $last_updated_lesson['changed']);
+            $lesson_update = date('Y-m-d H:i:s',
+              $last_updated_lesson['changed']);
           }
           else {
             $lesson_update = '-';
@@ -35,7 +39,8 @@ function mgc_stats_teachers_form($form, $form_state) {
 
           $pupil_activation = mgc_get_last_activation($teacher->uid);
           if ($pupil_activation) {
-            $activation_update = date('Y-m-d H:i:s', $pupil_activation['created']);
+            $activation_update = date('Y-m-d H:i:s',
+              $pupil_activation['created']);
           }
           else {
             $activation_update = '-';
@@ -68,7 +73,8 @@ function mgc_stats_teachers_form($form, $form_state) {
     }
     else {
       foreach ($teachers as $key => $teacher) {
-        $last_updated_course = mgc_get_last_updated_node('course', $teacher->uid);
+        $last_updated_course = mgc_get_last_updated_node('course',
+          $teacher->uid);
         if ($last_updated_course) {
           $course_update = date('Y-m-d H:i:s', $last_updated_course['changed']);
         }
@@ -76,7 +82,8 @@ function mgc_stats_teachers_form($form, $form_state) {
           $course_update = '-';
         }
 
-        $last_updated_lesson = mgc_get_last_updated_node('lesson', $teacher->uid);
+        $last_updated_lesson = mgc_get_last_updated_node('lesson',
+          $teacher->uid);
         if ($last_updated_lesson) {
           $lesson_update = date('Y-m-d H:i:s', $last_updated_lesson['changed']);
         }
@@ -86,7 +93,8 @@ function mgc_stats_teachers_form($form, $form_state) {
 
         $pupil_activation = mgc_get_last_activation($teacher->uid);
         if ($pupil_activation) {
-          $activation_update = date('Y-m-d H:i:s', $pupil_activation['created']);
+          $activation_update = date('Y-m-d H:i:s',
+            $pupil_activation['created']);
         }
         else {
           $activation_update = '-';
@@ -155,7 +163,8 @@ function mgc_stats_teachers_form($form, $form_state) {
 
   $form['table']['#attached']['js'] = array(
 
-    drupal_get_path('theme', 'ditoolsi') . '/js/tablesort/jquery.tablesorter.min.js',
+    drupal_get_path('theme',
+      'ditoolsi') . '/js/tablesort/jquery.tablesorter.min.js',
     drupal_get_path('theme', 'ditoolsi') . '/js/common/table-common.js',
   );
 
@@ -168,30 +177,36 @@ function mgc_stats_teachers_form($form, $form_state) {
 function mgc_robo_teachers_form($form, $form_state) {
 
   $header = array(
-    'User'         => t('Учитель'),
+    'User'         => t('Установить тариф'),
     'Email'        => t('e-mail'),
-    'TariffPaid'   => t('Оплаченный тариф'),
+    'CoursesQty'   => t('Кол-во курсов'),
+    'Tariff'       => t('Тариф'),
     'PaidDate'     => t('Дата оплаты'),
     'LeftPaidTime' => t('Истекает оплата'),
   );
 
   $rows     = array();
   $teachers = mgc_cached_teachers_data();
-
   if ($teachers) {
     if (isset($form_state['values']['mail']) && $form_state['values']['mail'] !== '') {
       foreach ($teachers as $key => $teacher) {
-        if ($teacher->mail == $form_state['values']['mail']) {
+        if ($teacher->mail === $form_state['values']['mail']) {
           if (mgc_user_has_curator_role($teacher)) {
             $role = ' (куратор)';
           }
           else {
             $role = '';
           }
+          $courses_qty                  = mgc_get_node_count('course',
+            $teacher->uid);
+          $courses_qty                  = $courses_qty ? : '0';
+          $tariff                       = mgc_get_tariff($teacher,
+            $courses_qty);
           $rows['key-' . $teacher->uid] = array(
-            'User'         => $teacher->name . $role,
+            'User'         => '<a href="/set-tariff/' . $teacher->uid . '" target = "_blank">' . $teacher->name . $role . '</a>',
             'Email'        => $teacher->mail,
-            'TariffPaid'   => t('Оплаченный тариф'),
+            'CoursesQty'   => $courses_qty,
+            'Tariff'       => $tariff,
             'PaidDate'     => t('Дата оплаты'),
             'LeftPaidTime' => t('Истекает оплата'),
           );
@@ -207,10 +222,15 @@ function mgc_robo_teachers_form($form, $form_state) {
         else {
           $role = '';
         }
+        $courses_qty                  = mgc_get_node_count('course',
+          $teacher->uid);
+        $courses_qty                  = $courses_qty ? : '0';
+        $tariff                       = mgc_get_tariff($teacher, $courses_qty);
         $rows['key-' . $teacher->uid] = array(
-          'User'         => $teacher->name . $role,
+          'User'         => '<a href="/set-tariff/' . $teacher->uid . '" target = "_blank">' . $teacher->name . $role . '</a>',
           'Email'        => $teacher->mail,
-          'TariffPaid'   => t('Оплаченный тариф'),
+          'CoursesQty'   => $courses_qty,
+          'Tariff'       => $tariff,
           'PaidDate'     => t('Дата оплаты'),
           'LeftPaidTime' => t('Истекает оплата'),
         );
@@ -255,7 +275,8 @@ function mgc_robo_teachers_form($form, $form_state) {
 
   $form['table']['#attached']['js'] = array(
 
-    drupal_get_path('theme', 'ditoolsi') . '/js/tablesort/jquery.tablesorter.min.js',
+    drupal_get_path('theme',
+      'ditoolsi') . '/js/tablesort/jquery.tablesorter.min.js',
     drupal_get_path('theme', 'ditoolsi') . '/js/common/table-common.js',
   );
 
@@ -264,6 +285,69 @@ function mgc_robo_teachers_form($form, $form_state) {
   );
   return $form;
 }
+
+function mgc_robo_set_tariff_form($form, $form_state, $teacher) {
+  $courses_qty                    = mgc_get_node_count('course', $teacher->uid);
+  $courses_qty                    = $courses_qty ? : '0';
+  $tariff                         = mgc_get_tariff($teacher, $courses_qty);
+  $form['name']                   = array(
+    '#type'        => 'fieldset',
+    '#title'       => $teacher->name . " ($teacher->mail)",
+    '#collapsible' => TRUE,
+    '#collapsed'   => FALSE,
+  );
+  $form['name']['course_qty']     = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Кол-во курсов'),
+    '#disabled'      => TRUE,
+    '#default_value' => $courses_qty,
+    '#size'          => 20,
+    '#maxlength'     => 20,
+  );
+  $form['name']['current_tariff'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Текущий тариф'),
+    '#disabled'      => TRUE,
+    '#default_value' => $tariff,
+    '#size'          => 20,
+    '#maxlength'     => 20,
+  );
+  $form['name']['new_tariff']     = array(
+    '#type'          => 'textfield',
+    '#required'      => TRUE,
+    '#title'         => t('Новый тариф'),
+    '#default_value' => '',
+    '#attributes'    => array(
+      'placeholder' => 'Введите число',
+    ),
+    '#size'          => 20,
+    '#maxlength'     => 20,
+  );
+  $form['submit']                 = array(
+    '#type'  => 'submit',
+    '#value' => 'Сохранить',
+  );
+  return $form;
+}
+
+function mgc_robo_set_tariff_form_validate($form, &$form_state) {
+  if (!is_numeric($form_state['input']['new_tariff'])) {
+    form_set_error('new_tariff', 'Введите число');
+  }
+}
+
+function mgc_robo_set_tariff_form_submit($form, &$form_state) {
+  $user = $form_state['build_info']['args'][0];
+  db_merge('mgc_tariff_override')
+    ->key(array('user_id' => $user->uid))
+    ->fields(array(
+      'tariff'  => $form_state['input']['new_tariff'],
+      'created' => REQUEST_TIME,
+    ))
+    ->execute();
+  drupal_set_message('Form submitted');
+}
+
 
 function mgc_ajax_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;

@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.inc';
 require_once __DIR__ . '/includes/mgc_robo.forms.inc';
+require_once __DIR__ . '/includes/mgc_robo.admin.inc';
 require_once __DIR__ . '/includes/mgc_robo.getters.inc';
 require_once __DIR__ . '/includes/mgc_robo.helpers.inc';
 require_once __DIR__ . '/includes/mgc_robo.pages.inc';
+require_once __DIR__ . '/includes/mgc_robo.payment.inc';
 
 function mgc_robo_menu() {
   $items['stats/teachers'] = array(
@@ -29,11 +31,39 @@ function mgc_robo_menu() {
     'type'             => MENU_CALLBACK,
   );
   $items['set-tariff/%user']            = array(
-    'page callback'     => 'mgc_robo_set_tariff_page',
-    'page arguments'    => array(1),
-    'type'              => MENU_CALLBACK,
-    'access callback'   => TRUE,
-    'delivery callback' => 'drupal_json_output',
+    'page callback'    => 'mgc_robo_set_tariff_page',
+    'page arguments'   => array(1),
+    'type'             => MENU_CALLBACK,
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo'],
+  );
+
+  $items['admin/config/robo'] = array(
+    'title'            => 'Robokassa конфигурация',
+    //'type'             => MENU_DEFAULT_LOCAL_TASK,
+    'position'         => 'left',
+    'weight'           => -100,
+    'page callback'    => 'system_admin_menu_block_page',
+    'access arguments' => array('administer site configuration'),
+    'file'             => 'system.admin.inc',
+    'file path'        => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/config/robo/settings'] = array(
+    'title'            => 'Настройки',
+    'description'      => 'Настройки Robokassa: тарифы и прочее',
+    'type'             => MENU_LOCAL_TASK,
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('mgc_robo_config_admin_form'),
+    'access arguments' => array('access administration pages'),
+    'weight'           => 10,
+  );
+  $items['robo/payment']               = array(
+    'title'            => 'Оплата',
+    'page callback'    => 'mgc_robo_payment_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo payment'],
+    'type'             => MENU_CALLBACK,
   );
 
   return $items;
@@ -57,13 +87,22 @@ function mgc_robo_theme() {
         'image_path' => '',
       ),
     ),
-    'mgc_robo_set_tariff_page'        => array(
+    'mgc_robo_payment_page'         => array(
       'path'      => $path,
-      'template'  => 'mgc-robo-teachers-page',
+      'template'  => 'mgc-robo-payment-page',
       'variables' => array(
         'image_path' => '',
       ),
     ),
+    'mgc_robo_set_tariff_page'      => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-set-tariff-page',
+      'variables' => array(
+        'image_path' => '',
+        'teacher'    => new stdClass(),
+      ),
+    ),
+
   );
 }
 
@@ -71,6 +110,9 @@ function mgc_robo_access($op) {
   switch ($op) {
 
     case 'view robo':
+      return user_access('administer');
+      break;
+    case 'view robo payment':
       return user_access('administer');
       break;
   }

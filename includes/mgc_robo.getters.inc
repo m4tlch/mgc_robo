@@ -6,25 +6,11 @@ function mgc_get_teachers() {
   return $users;
 }
 
-function mgc_get_records() {
-  $query = db_select('mgc_autochecks_info', 'm')->fields('m', array(
-    'user_id',
-    'email',
-    'course_id',
-    'lesson_title',
-    'lesson_number',
-    'date',
-  ))// ->groupBy('date')
-  ->orderBy('date', 'DESC')//Most recent first.
-  ->extend('PagerDefault')->limit(30)->execute();
-  return $query;
-}
-
 function mgc_get_last_activation($teacher_id) {
-  $query      = db_select("mgc_pupil_activation", "m")
-    ->fields("m", array("created"))
-    ->condition("teacher_id", $teacher_id, "=")
-    ->orderBy("created", "DESC")
+  $query      = db_select('mgc_pupil_activation', 'm')
+    ->fields('m', array('created'))
+    ->condition('teacher_id', $teacher_id, '=')
+    ->orderBy('created', 'DESC')
     ->range(0, 1)
     ->execute();
   $activation = $query->fetchAssoc();
@@ -33,11 +19,11 @@ function mgc_get_last_activation($teacher_id) {
 }
 
 function mgc_get_last_updated_node($type, $uid) {
-  $query = db_select("node", "n")
-    ->fields("n", array("nid", "title", "changed"))
-    ->condition("type", $type, "=")
-    ->condition("uid", $uid, "=")
-    ->orderBy("changed", "DESC")
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid', 'title', 'changed'))
+    ->condition('type', $type, '=')
+    ->condition('uid', $uid, '=')
+    ->orderBy('changed', 'DESC')
     ->range(0, 1)
     ->execute();
   $node  = $query->fetchAssoc();
@@ -46,10 +32,10 @@ function mgc_get_last_updated_node($type, $uid) {
 }
 
 function mgc_get_last_progress($teacher_id) {
-  $query    = db_select("mgc_task_progress_update", "m")
-    ->fields("m", array("created"))
-    ->condition("teacher_id", $teacher_id, "=")
-    ->orderBy("created", "DESC")
+  $query    = db_select('mgc_task_progress_update', 'm')
+    ->fields('m', array('created'))
+    ->condition('teacher_id', $teacher_id, '=')
+    ->orderBy('created', 'DESC')
     ->range(0, 1)
     ->execute();
   $progress = $query->fetchAssoc();
@@ -59,7 +45,41 @@ function mgc_get_last_progress($teacher_id) {
 
 function mgc_get_nodes_by_type($type, $uid) {
   return node_load_multiple(array(), array('type' => $type, 'uid' => $uid));
+}
 
+function mgc_get_node_count($type, $uid) {
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid', 'title'))
+    ->condition('type', $type, '=')
+    ->condition('uid', $uid, '=')
+    ->countQuery();
+
+
+  return $query->execute()->fetchField();
+}
+
+function mgc_get_tariff($teacher, $courses_qty) {
+
+  if ($tariff = mgc_get_override_tariff($teacher)) {
+    return $tariff;
+  }
+  else {
+    if ($courses_qty < 3) {
+      $tariff = variable_get('tariff_tier1', 0);
+    }
+    else {
+      $tariff = variable_get('tariff_tier2', 0);
+    }
+  }
+
+  return $tariff;
+}
+
+function mgc_get_override_tariff($teacher) {
+  $query = db_select('mgc_tariff_override', 'm')
+    ->fields('m', array('tariff'))
+    ->condition('user_id', $teacher->uid, '=');
+  return $query->execute()->fetchField();
 }
 
 function mgc_get_users_by_role($role_name) {

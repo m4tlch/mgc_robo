@@ -18,8 +18,15 @@ function mgc_cached_teachers_data($reset = FALSE) {
   return $data;
 }
 
-function mgc_print_form($form_name) {
-  $form = drupal_get_form($form_name);
+function mgc_print_form($form_name, $var1 = NULL, $var2 = NULL, $var3 = NULL) {
+  $form = drupal_get_form($form_name, $var1, $var2, $var3);
   $form = drupal_render($form);
   print $form;
+}
+
+function mgc_print_timer() {
+  $time_start = microtime(TRUE);
+  $time_end   = microtime(TRUE);
+  $time       = $time_end - $time_start;
+  echo "Process Time: {$time}";
 }

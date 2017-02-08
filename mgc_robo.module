@@ -12,7 +12,7 @@ function mgc_robo_menu() {
     'title'            => 'Статистика по учителям',
     'page callback'    => 'mgc_stats_teachers_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo'],
+    'access arguments' => ['administer robo payment'],
     'type'             => MENU_CALLBACK,
   );
 
@@ -20,14 +20,14 @@ function mgc_robo_menu() {
     'page callback'    => 'mgc_get_user_search_autocomplete',
     'page arguments'   => array(3),
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo'],
+    'access arguments' => ['view robo payment'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/teachers']               = array(
     'title'            => 'Robokassa по учителям',
     'page callback'    => 'mgc_robo_teachers_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo'],
+    'access arguments' => ['administer robo payment'],
     'type'             => MENU_CALLBACK,
   );
   $items['set-tariff/%user']            = array(
@@ -35,7 +35,7 @@ function mgc_robo_menu() {
     'page arguments'   => array(1),
     'type'             => MENU_CALLBACK,
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo'],
+    'access arguments' => ['administer robo payment'],
   );
 
   $items['admin/config/robo'] = array(
@@ -59,12 +59,49 @@ function mgc_robo_menu() {
     'weight'           => 10,
   );
   $items['robo/payment']               = array(
-    'title'            => 'Оплата',
+    'title'            => '',
     'page callback'    => 'mgc_robo_payment_page',
     'access callback'  => 'mgc_robo_access',
     'access arguments' => ['view robo payment'],
     'type'             => MENU_CALLBACK,
   );
+  $items['robo/payment/fail']          = array(
+    'title'            => 'Ошибка оплаты в Робокассе',
+    'page callback'    => 'mgc_robo_payment_fail_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo payment'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['robo/payment/result']        = array(
+    'title'            => 'Результат оплаты в Робокассе',
+    'page callback'    => 'mgc_robo_payment_result_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo payment'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['robo/payment/success']       = array(
+    'title'            => 'Оплата в Робокассе успешна',
+    'page callback'    => 'mgc_robo_payment_success_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo payment'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['robo/user/%user']            = array(
+    'title'            => '',
+    'page callback'    => 'mgc_robo_user_payment_page',
+    'page arguments'   => array(2),
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo payment'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['signature/get']              = array(
+    'page callback'     => 'mgc_get_signature',
+    'type'              => MENU_CALLBACK,
+    'access callback'   => 'mgc_robo_access',
+    'access arguments'  => ['view robo payment'],
+    'delivery callback' => 'drupal_json_output',
+  );
+
 
   return $items;
 }
@@ -76,30 +113,43 @@ function mgc_robo_theme() {
     'mgc_stats_teachers_page_theme' => array(
       'path'      => $path,
       'template'  => 'mgc-stats-teachers-page',
-      'variables' => array(
-        'image_path' => '',
-      ),
+      'variables' => array(),
     ),
     'mgc_robo_teachers_page'        => array(
       'path'      => $path,
       'template'  => 'mgc-robo-teachers-page',
-      'variables' => array(
-        'image_path' => '',
-      ),
+      'variables' => array(),
     ),
     'mgc_robo_payment_page'         => array(
       'path'      => $path,
       'template'  => 'mgc-robo-payment-page',
-      'variables' => array(
-        'image_path' => '',
-      ),
+      'variables' => array(),
+    ),
+    'mgc_robo_payment_fail_page'    => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-payment-fail-page',
+      'variables' => array(),
+    ),
+    'mgc_robo_payment_result_page'  => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-payment-result-page',
+      'variables' => array(),
+    ),
+    'mgc_robo_payment_success_page' => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-payment-success-page',
+      'variables' => array(),
+    ),
+    'mgc_robo_user_payment_page'    => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-user-payment-page',
+      'variables' => array(),
     ),
     'mgc_robo_set_tariff_page'      => array(
       'path'      => $path,
       'template'  => 'mgc-robo-set-tariff-page',
       'variables' => array(
-        'image_path' => '',
-        'teacher'    => new stdClass(),
+        'teacher' => new stdClass(),
       ),
     ),
 
@@ -108,14 +158,12 @@ function mgc_robo_theme() {
 
 function mgc_robo_access($op) {
   switch ($op) {
-
-    case 'view robo':
+    case 'administer robo payment':
       return user_access('administer');
       break;
     case 'view robo payment':
-      return user_access('administer');
+      return mgc_user_has_teacher_role();
       break;
   }
-
   return FALSE;
 }

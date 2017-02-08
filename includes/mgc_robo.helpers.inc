@@ -30,3 +30,22 @@ function mgc_print_timer() {
   $time       = $time_end - $time_start;
   echo "Process Time: {$time}";
 }
+
+function mgc_time_diff($enroll_time) {
+  //TODO пересчет тарифа в днях
+
+  $seconds = $enroll_time['enrolled'] + $enroll_time['paid_days'] * 24 * 60 * 60 - time();
+
+  $days    = floor($seconds / 86400);
+  $seconds %= 86400;
+
+  $hours   = floor($seconds / 3600);
+  $seconds %= 3600;
+
+  $minutes = floor($seconds / 60);
+  $seconds %= 60;
+
+
+  return "$days дней $hours часов";
+  //echo "$days дней $hours часов $minutes minutes and $seconds seconds";
+}

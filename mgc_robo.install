@@ -27,7 +27,7 @@ function mgc_robo_schema() {
         'length'   => 11,
       ),
     ),
-    'primary key' => array('id', 'user_id'),
+    'primary key' => array('id'),
   );
   $schema['mgc_task_progress_update'] = array(
     'fields'      => array(
@@ -62,7 +62,7 @@ function mgc_robo_schema() {
         'length'   => 11,
       ),
     ),
-    'primary key' => array('id', 'user_id'),
+    'primary key' => array('id'),
   );
   $schema['mgc_tariff_override']      = array(
     'fields'      => array(
@@ -89,11 +89,108 @@ function mgc_robo_schema() {
         'length'   => 11,
       ),
     ),
-    'primary key' => array('id', 'user_id'),
+    'primary key' => array('id'),
   );
+
+  $schema['mgc_robo_orders'] = array(
+    'fields'      => array(
+      'id'      => array(
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'user_id' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'status'  => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['mgc_payment_order'] = array(
+    'fields'      => array(
+      'id'        => array(
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'uid'       => array(
+        'type'     => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default'  => 0,
+      ),
+      'amount'    => array(
+        'type'      => 'numeric',
+        'size'      => 'normal',
+        'not null'  => TRUE,
+        'default'   => 0,
+        'precision' => 12,
+        'scale'     => 6,
+      ),
+      'created'   => array(
+        'type'        => 'int',
+        'not null'    => TRUE,
+        'unsigned'    => TRUE,
+        'default'     => 0,
+        'description' => 'Time of payment creation',
+      ),
+      'enrolled'  => array(
+        'type'        => 'int',
+        'not null'    => TRUE,
+        'unsigned'    => TRUE,
+        'default'     => 0,
+        'description' => 'Time of payment enrolling',
+      ),
+      'inv_id'    => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'paid_days' => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'status'    => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => TRUE,
+      ),
+      'shp_item'  => array(
+        'type'     => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length'   => 11,
+      ),
+      'shp_type'  => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => TRUE,
+      ),
+
+    ),
+    'primary key' => array('id'),
+  );
+
   return $schema;
 }
 
+//function mgc_robo_update_7101() {
+//
+//  db_create_table('mgc_orders', $schema['mgc_orders']);
+//}
 /*function mgc_ai_update_7101() {
   $schema['mgc_send_to_roistat']             = array(
     'fields'      => array(

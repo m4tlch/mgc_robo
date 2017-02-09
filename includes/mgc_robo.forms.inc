@@ -274,14 +274,29 @@ function mgc_robo_teachers_form($form, $form_state) {
 }
 
 function mgc_robo_set_tariff_form($form, $form_state, $teacher) {
-  $courses_qty                    = mgc_get_node_count('course', $teacher->uid);
-  $courses_qty                    = $courses_qty ? : '0';
-  $tariff                         = mgc_get_tariff($teacher, $courses_qty);
+  $courses_qty = mgc_get_node_count('course', $teacher->uid);
+  $courses_qty = $courses_qty ? : '0';
+  $tariff      = mgc_get_tariff($teacher, $courses_qty);
+  $tariff_type = mgc_get_tariff_type($teacher);
+  if (!$tariff_type) {
+    $tariff_type = 'free';
+  }
   $form['name']                   = array(
     '#type'        => 'fieldset',
     '#title'       => $teacher->name . " ($teacher->mail)",
     '#collapsible' => TRUE,
     '#collapsed'   => FALSE,
+  );
+  $options                        = array(
+    'free' => t('Бесплатный доступ'),
+    'paid' => t('Платный доступ'),
+  );
+  $form['name']['tariff_type']    = array(
+    '#type'          => 'radios',
+    '#title'         => t('Тип доступа'),
+    '#options'       => $options,
+    '#description'   => t('Если выбрать платный доступ, то пользователь будет поставлен на тариф по-умолчанию, либо на переопределенный ниже.'),
+    '#default_value' => $tariff_type,
   );
   $form['name']['course_qty']     = array(
     '#type'          => 'textfield',
@@ -299,10 +314,13 @@ function mgc_robo_set_tariff_form($form, $form_state, $teacher) {
     '#size'          => 20,
     '#maxlength'     => 20,
   );
+  $form['name']['default_tariff'] = array(
+    '#type'  => 'hidden',
+    '#value' => $tariff,
+  );
   $form['name']['new_tariff']     = array(
     '#type'          => 'textfield',
-    '#required'      => TRUE,
-    '#title'         => t('Новый тариф'),
+    '#title'         => t('Переопределить тариф'),
     '#default_value' => '',
     '#attributes'    => array(
       'placeholder' => 'Введите число',
@@ -318,16 +336,18 @@ function mgc_robo_set_tariff_form($form, $form_state, $teacher) {
 }
 
 function mgc_robo_set_tariff_form_validate($form, &$form_state) {
-  if (!is_numeric($form_state['input']['new_tariff'])) {
+  if ($form_state['input']['new_tariff'] !== '' && !is_numeric($form_state['input']['new_tariff'])) {
     form_set_error('new_tariff', 'Введите число');
   }
 }
 
 function mgc_robo_set_tariff_form_submit($form, &$form_state) {
-  $user = $form_state['build_info']['args'][0];
+  $user   = $form_state['build_info']['args'][0];
+  $tariff = $form_state['input']['new_tariff'] !== '' ? $form_state['input']['new_tariff'] : $form_state['input']['default_tariff'];
   db_merge('mgc_tariff_override')->key(array('user_id' => $user->uid))->fields(array(
-    'tariff'  => $form_state['input']['new_tariff'],
-    'created' => REQUEST_TIME,
+    'tariff'      => $tariff,
+    'tariff_type' => $form_state['input']['tariff_type'],
+    'created'     => REQUEST_TIME,
   ))->execute();
   drupal_set_message('Form submitted');
 }

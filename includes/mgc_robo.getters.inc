@@ -235,12 +235,26 @@ function mgc_get_active_enroll($user_id, $shp_type) {
   return $result;
 }
 
+function mgc_get_tariff_type($teacher) {
+  $query = db_select('mgc_tariff_override', 'm')
+    ->fields('m', array('tariff_type'))
+    ->condition('user_id', $teacher->uid, '=');
+  return $query->execute()->fetchField();
+}
+
 function mgc_get_access($user) {
-  mgc_teacher_has_free_access($user);
-  return FALSE;
+  $result = mgc_teacher_has_free_access($user);
+  return $result;
 }
 
 function mgc_teacher_has_free_access($user) {
+  $result = mgc_get_tariff_type($user);
+  $stop   = 'Stop';
+  if (!$result || $result === 'free') {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
 
-  return TRUE;
 }

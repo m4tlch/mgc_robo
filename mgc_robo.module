@@ -20,7 +20,7 @@ function mgc_robo_menu() {
     'page callback'    => 'mgc_get_user_search_autocomplete',
     'page arguments'   => array(3),
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['administer robo payment'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/teachers']               = array(
@@ -62,28 +62,28 @@ function mgc_robo_menu() {
     'title'            => '',
     'page callback'    => 'mgc_robo_payment_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['view robo paid'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/fail']          = array(
     'title'            => 'Ошибка оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_fail_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['view robo paid'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/result']        = array(
     'title'            => 'Результат оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_result_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['view robo paid'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/success']       = array(
     'title'            => 'Оплата в Робокассе успешна',
     'page callback'    => 'mgc_robo_payment_success_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['view robo paid'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/user/%user']            = array(
@@ -91,14 +91,14 @@ function mgc_robo_menu() {
     'page callback'    => 'mgc_robo_user_payment_page',
     'page arguments'   => array(2),
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo payment'],
+    'access arguments' => ['view robo free'],
     'type'             => MENU_CALLBACK,
   );
   $items['signature/get']              = array(
     'page callback'     => 'mgc_get_signature',
     'type'              => MENU_CALLBACK,
     'access callback'   => 'mgc_robo_access',
-    'access arguments'  => ['view robo payment'],
+    'access arguments'  => ['view robo paid'],
     'delivery callback' => 'drupal_json_output',
   );
 
@@ -157,13 +157,26 @@ function mgc_robo_theme() {
 }
 
 function mgc_robo_access($op) {
+  global $user;
   switch ($op) {
     case 'administer robo payment':
       return user_access('administer');
       break;
-    case 'view robo payment':
+    case 'view robo paid':
+      return mgc_user_has_teacher_role() && mgc_get_access($user);
+      break;
+    case 'view robo free':
       return mgc_user_has_teacher_role();
       break;
   }
   return FALSE;
+}
+
+function mgc_robo_init() {
+  global $user;
+
+  if (!(arg(0) === 'robo' && arg(1) === 'user') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
+    drupal_access_denied();
+    drupal_exit();
+  }
 }

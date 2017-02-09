@@ -1,6 +1,7 @@
 <?php
 function mgc_robo_schema() {
-  $schema['mgc_pupil_activation']     = array(
+  /*Статистика по активации учеников*/
+  $schema['mgc_pupil_activation'] = array(
     'fields'      => array(
       'id'         => array(
         'type'     => 'serial',
@@ -29,6 +30,7 @@ function mgc_robo_schema() {
     ),
     'primary key' => array('id'),
   );
+  /*Статистика активности учителя*/
   $schema['mgc_task_progress_update'] = array(
     'fields'      => array(
       'id'          => array(
@@ -66,23 +68,29 @@ function mgc_robo_schema() {
   );
   $schema['mgc_tariff_override']      = array(
     'fields'      => array(
-      'id'      => array(
+      'id'          => array(
         'type'     => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'user_id' => array(
+      'user_id'     => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'tariff'  => array(
+      'tariff'      => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'size'     => 'big',
       ),
-      'created' => array(
+      'tariff_type' => array(
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'description' => 'Free or paid access to platform',
+      ),
+      'created'     => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,

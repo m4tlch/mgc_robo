@@ -152,7 +152,6 @@ type=hidden name=IncCurrLabel value=$in_curr>" . "<input type=hidden name=Cultur
 }
 
 function mgc_get_signature() {
-
   if (isset($_POST['inv_id'], $_POST['out_summ'], $_POST['shp_item'])) {
     $out_summ  = $_POST['out_summ'] . '.00';
     $inv_id    = $_POST['inv_id'];
@@ -177,45 +176,6 @@ function mgc_get_new_order_id($user_id, $status = 'pending') {
     'status'  => $status,
   ))->execute();
   return $id;
-}
-
-function mgc_create_new_enrollment(
-  $user_id,
-  $status,
-  $amount,
-  $enrolled,
-  $created,
-  $inv_id,
-  $paid_days,
-  $shp_item,
-  $shp_type
-) {
-  $id = db_insert('mgc_payment_order')->fields(array(
-    'uid'            => $user_id,
-    'status'         => $status,
-    'amount'         => $amount,
-    'enrolled'       => $enrolled,
-    'created'        => $created,
-    'inv_id'         => $inv_id,
-    'paid_days'      => $paid_days,
-    'shp_item'       => $shp_item,
-    'shp_type'       => $shp_type,
-    'payment_status' => 'active',
-  ))->execute();
-  return $id;
-}
-
-function mgc_update_enrollment($inv_id, $status = 'paid') {
-  db_update('mgc_payment_order')->fields(array(
-    'status'   => $status,
-    'enrolled' => time(),
-  ))->condition('inv_id', $inv_id)->execute();
-}
-
-function mgc_update_enrollment_status($inv_id, $payment_status) {
-  db_update('mgc_payment_order')->fields(array(
-    'payment_status' => $payment_status,
-  ))->condition('inv_id', $inv_id)->execute();
 }
 
 function mgc_get_paid_enrollments($user_id) {

@@ -450,7 +450,7 @@ function mgc_create_robo_enrollment_ajax($form, $form_state) {
     $shp_type = 'course';
   }
 
-  mgc_create_new_enrollment($user_id, $status, $amount, $enrolled, $created, $form_state['values']['InvId'], $paid_days,
+  mgc_set_new_enrollment($user_id, $status, $amount, $enrolled, $created, $form_state['values']['InvId'], $paid_days,
     $form_state['values']['Shp_item'], $shp_type);
 
   ctools_include('ajax');

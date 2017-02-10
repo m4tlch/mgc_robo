@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/config.inc';
 require_once __DIR__ . '/includes/mgc_robo.forms.inc';
 require_once __DIR__ . '/includes/mgc_robo.admin.inc';
 require_once __DIR__ . '/includes/mgc_robo.getters.inc';
+require_once __DIR__ . '/includes/mgc_robo.setters.inc';
 require_once __DIR__ . '/includes/mgc_robo.helpers.inc';
 require_once __DIR__ . '/includes/mgc_robo.pages.inc';
 require_once __DIR__ . '/includes/mgc_robo.payment.inc';

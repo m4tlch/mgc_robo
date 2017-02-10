@@ -199,31 +199,36 @@ function mgc_robo_schema() {
   );
   $schema['mgc_trial_access']  = array(
     'fields'      => array(
-      'id'      => array(
+      'id'       => array(
         'type'     => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'uid'     => array(
+      'uid'      => array(
         'type'     => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default'  => 0,
       ),
-      'created' => array(
+      'created'  => array(
         'type'     => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default'  => 0,
       ),
-      'updated' => array(
+      'updated'  => array(
         'type'     => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default'  => 0,
       ),
-      'status'  => array(
+      'status'   => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => TRUE,
+      ),
+      'override' => array(
         'type'     => 'varchar',
         'length'   => 255,
         'not null' => TRUE,

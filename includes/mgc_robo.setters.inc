@@ -2,19 +2,38 @@
 
 function mgc_set_trial_access($user) {
   $id = db_insert('mgc_trial_access')->fields(array(
-    'uid'     => $user->uid,
-    'status'  => 'active',
-    'created' => time(),
-    'updated' => time(),
+    'uid'      => $user->uid,
+    'status'   => 'active',
+    'created'  => time(),
+    'updated'  => time(),
+    'override' => 'no changes',
   ))->execute();
   return $id;
 }
 
-function mgc_update_trial_access($user, $status = 'active') {
-  db_update('mgc_trial_access')->fields(array(
-    'status'  => $status,
-    'updated' => time(),
-  ))->condition('uid', $user->uid)->execute();
+function mgc_update_trial_access($user, $status = 'active', $override = 'no changes') {
+  $time    = mgc_get_trial_access_time($user);
+  $created = $time['created'];
+  /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
+  $diff = $created + MGC_TRIAL_TIME_DAYS * 86400 - time();
+  if ($diff <= 0 && $override === 'no changes') {
+    $status = 'blocked';
+  }
+  if ($override === 'no changes') {
+    db_update('mgc_trial_access')->fields(array(
+      'status'  => $status,
+      'updated' => time(),
+    ))->condition('uid', $user->uid)->execute();
+  }
+  else {
+    db_update('mgc_trial_access')->fields(array(
+      'status'   => $status,
+      'updated'  => time(),
+      'override' => $override,
+    ))->condition('uid', $user->uid)->execute();
+  }
+
+  $stop = 'Stop';
 }
 
 function mgc_set_new_enrollment(

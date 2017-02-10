@@ -210,6 +210,7 @@ function mgc_get_tariff_type($teacher) {
 
 function mgc_get_access($user) {
   $free_access    = mgc_teacher_has_free_access($user);
+  $trial_access   = mgc_teacher_has_trial_access($user);
   $paid_time_left = mgc_get_teacher_paid_time_left($user, 'course');
 
   return $free_access || $paid_time_left;
@@ -218,6 +219,16 @@ function mgc_get_access($user) {
 function mgc_teacher_has_free_access($user) {
   $result = mgc_get_tariff_type($user);
   if (!$result || $result === 'free') {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function mgc_teacher_has_trial_access($user) {
+  $result = mgc_get_trial_access_status($user);
+  if (!$result || $result === 'active') {
     return TRUE;
   }
   else {
@@ -242,4 +253,9 @@ function mgc_get_teacher_paid_time_left($user, $shp_type) {
     mgc_update_enrollment_status($time['inv_id'], 'expired');
     return FALSE;
   }
+}
+
+function mgc_get_trial_access_status($user) {
+  $query = db_select('mgc_trial_access')->fields(array('status'))->condition('uid', $user->uid, '=');
+  return $query->execute()->fetchField();
 }

@@ -1,12 +1,20 @@
 <?php
 
 function mgc_set_trial_access($user) {
-  $id = db_insert('mgc_payment_order')->fields(array(
+  $id = db_insert('mgc_trial_access')->fields(array(
     'uid'     => $user->uid,
     'status'  => 'active',
     'created' => time(),
+    'updated' => time(),
   ))->execute();
   return $id;
+}
+
+function mgc_update_trial_access($user, $status = 'active') {
+  db_update('mgc_trial_access')->fields(array(
+    'status'  => $status,
+    'updated' => time(),
+  ))->condition('uid', $user->uid)->execute();
 }
 
 function mgc_set_new_enrollment(

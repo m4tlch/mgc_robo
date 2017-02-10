@@ -213,7 +213,7 @@ function mgc_get_access($user) {
   $trial_access   = mgc_teacher_has_trial_access($user);
   $paid_time_left = mgc_get_teacher_paid_time_left($user, 'course');
 
-  return $free_access || $paid_time_left;
+  return $free_access || $paid_time_left || $trial_access;
 }
 
 function mgc_teacher_has_free_access($user) {

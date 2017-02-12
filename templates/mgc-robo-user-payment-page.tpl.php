@@ -1,9 +1,10 @@
 <div class="row">
-    <div class="col-md-12"><h1>Информация об вашей оплате</h1>
+    <div class="col-md-12"><h1>Информация о вашей оплате</h1>
         <div class="well">
             <dl class="dl-vertical">
                 <dt> Количество ваших курсов на платформе:</dt>
                 <dd><?php global $user;
+
                   $courses_qty = mgc_get_node_count('course', $user->uid);
                   print  $courses_qty;
                   ?>
@@ -17,10 +18,11 @@
             </dl>
             <dl class="dl-vertical">
                 <dt> Осталось оплаченного времени</dt>
-                <dd><?php
-                  $enroll_date = mgc_get_active_enroll($user->uid, 'course');
-                  if ($enroll_date) {
-                    print  mgc_time_diff($enroll_date);
+                <dd>
+                  <?php
+                  $time_left = mgc_get_teacher_paid_time_left($user, 'course');
+                  if ($time_left && $time_left['left_seconds'] > 0) {
+                    print  mgc_time_diff($time_left);
                   }
                   else {
                     print '0';
@@ -50,6 +52,7 @@
                 <th>#</th>
                 <th>Заказ №</th>
                 <th>Тип заказа</th>
+                <th>Статус заказа</th>
                 <th>Дней оплачено</th>
                 <th>Сумма оплаты</th>
                 <th>Дата оплаты</th>
@@ -58,13 +61,16 @@
             <tbody>
             <?php
             $rows = mgc_get_paid_enrollments($user->uid);
+            $stop = 'Stop';
             if ($rows) {
               foreach ($rows as $key => $row) {
-                $shp_type = ($row->shp_type === 'webinar') ? 'За вебинар' : 'За курсы';
+                $shp_type       = ($row->shp_type === 'webinar') ? 'За вебинар' : 'За курсы';
+                $payment_status = ($row->payment_status === 'active') ? 'Активный' : 'Закончился';
                 print '<tr>';
                 print '<th scope="row">' . $key . '</th>';
                 print ' <td>' . $row->inv_id . '</td>';
                 print ' <td>' . $shp_type . '</td>';
+                print ' <td>' . $payment_status . '</td>';
                 print ' <td>' . $row->paid_days . '</td>';
                 print ' <td>' . number_format($row->amount, 2, '.', '') . '</td>';
                 print ' <td>' . date('M j, Y H:i', $row->enrolled) . '</td>';

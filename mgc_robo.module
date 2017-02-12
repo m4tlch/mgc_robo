@@ -69,21 +69,21 @@ function mgc_robo_menu() {
     'title'            => 'Ошибка оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_fail_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo paid'],
+    'access arguments' => ['view robo gateway'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/result']        = array(
     'title'            => 'Результат оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_result_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo paid'],
+    'access arguments' => ['view robo gateway'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/success']       = array(
     'title'            => 'Оплата в Робокассе успешна',
     'page callback'    => 'mgc_robo_payment_success_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo paid'],
+    'access arguments' => ['view robo gateway'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/user/%user']            = array(
@@ -163,10 +163,13 @@ function mgc_robo_access($op) {
       return user_access('administer');
       break;
     case 'view robo paid':
-      return mgc_user_has_teacher_role() && mgc_get_access($user);
+      return mgc_user_has_teacher_role();
       break;
     case 'view robo free':
       return mgc_user_has_teacher_role();
+      break;
+    case 'view robo gateway':
+      return TRUE;
       break;
   }
   return FALSE;
@@ -174,8 +177,19 @@ function mgc_robo_access($op) {
 
 function mgc_robo_init() {
   global $user;
+  $current_path = drupal_get_path_alias();
 
-  if (!(arg(0) === 'robo' && arg(1) === 'user') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
+  $seconds = mgc_get_teacher_paid_time_left($user, 'course');
+  $stop    = 'Stop';
+  if ($seconds) {
+    $days = floor($seconds['left_seconds'] / 86400);
+    if ($seconds['left_seconds'] > 0 && $days <= 3) {
+      drupal_set_message('Оплаченного времени осталось: ' . mgc_time_diff($seconds));
+    }
+  }
+
+  $stop = 'Stop';
+  if (!($current_path === 'front_page') && !($current_path === 'robo/payment') && !(arg(0) === 'robo' && arg(1) === 'user') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
     drupal_access_denied();
     drupal_exit();
   }

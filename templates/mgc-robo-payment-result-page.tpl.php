@@ -27,6 +27,7 @@
       if ($my_crc != $crc) {
         echo "bad sign\n";
         mgc_update_enrollment($inv_id, 'fail');
+        //mgc_mail('paul.nike@yandex.ru', '$mail_subject', $inv_id);
         exit();
       }
 
@@ -34,6 +35,7 @@
       // success
       echo "OK$inv_id\n";
       mgc_update_enrollment($inv_id);
+      //mgc_mail('paul.nike@yandex.ru', '$mail_subject2', $inv_id);
       ?>
     </div>
 </div>

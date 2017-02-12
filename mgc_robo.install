@@ -125,19 +125,19 @@ function mgc_robo_schema() {
 
   $schema['mgc_payment_order'] = array(
     'fields'      => array(
-      'id'        => array(
+      'id'             => array(
         'type'     => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'uid'       => array(
+      'uid'            => array(
         'type'     => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default'  => 0,
       ),
-      'amount'    => array(
+      'amount'         => array(
         'type'      => 'numeric',
         'size'      => 'normal',
         'not null'  => TRUE,
@@ -145,44 +145,50 @@ function mgc_robo_schema() {
         'precision' => 12,
         'scale'     => 6,
       ),
-      'created'   => array(
+      'created'        => array(
         'type'        => 'int',
         'not null'    => TRUE,
         'unsigned'    => TRUE,
         'default'     => 0,
         'description' => 'Time of payment creation',
       ),
-      'enrolled'  => array(
+      'enrolled'       => array(
         'type'        => 'int',
         'not null'    => TRUE,
         'unsigned'    => TRUE,
         'default'     => 0,
         'description' => 'Time of payment enrolling',
       ),
-      'inv_id'    => array(
+      'inv_id'         => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'paid_days' => array(
+      'paid_days'      => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'status'    => array(
+      'status'         => array(
         'type'     => 'varchar',
         'length'   => 255,
         'not null' => TRUE,
       ),
-      'shp_item'  => array(
+      'payment_status' => array(
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'description' => 'Active or expired payment enrolling',
+      ),
+      'shp_item'       => array(
         'type'     => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'length'   => 11,
       ),
-      'shp_type'  => array(
+      'shp_type'       => array(
         'type'     => 'varchar',
         'length'   => 255,
         'not null' => TRUE,

@@ -35,7 +35,9 @@ function mgc_time_diff($enroll_time) {
   //TODO пересчет тарифа в днях
 
   $seconds = $enroll_time['enrolled'] + $enroll_time['paid_days'] * 24 * 60 * 60 - time();
-
+  if ($seconds < 0) {
+    return '0';
+  }
   $days    = floor($seconds / 86400);
   $seconds %= 86400;
 
@@ -48,4 +50,14 @@ function mgc_time_diff($enroll_time) {
 
   return "$days дней $hours часов";
   //echo "$days дней $hours часов $minutes minutes and $seconds seconds";
+}
+
+function mgc_mail($mail, $mail_subject, $mail_body) {
+  global $language;
+  drupal_mail('system', __FUNCTION__, $mail, $language, array(
+    'context' => array(
+      'subject' => $mail_subject,
+      'message' => $mail_body,
+    ),
+  ));
 }

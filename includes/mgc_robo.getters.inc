@@ -191,15 +191,16 @@ function mgc_create_new_enrollment(
   $shp_type
 ) {
   $id = db_insert('mgc_payment_order')->fields(array(
-    'uid'       => $user_id,
-    'status'    => $status,
-    'amount'    => $amount,
-    'enrolled'  => $enrolled,
-    'created'   => $created,
-    'inv_id'    => $inv_id,
-    'paid_days' => $paid_days,
-    'shp_item'  => $shp_item,
-    'shp_type'  => $shp_type,
+    'uid'            => $user_id,
+    'status'         => $status,
+    'amount'         => $amount,
+    'enrolled'       => $enrolled,
+    'created'        => $created,
+    'inv_id'         => $inv_id,
+    'paid_days'      => $paid_days,
+    'shp_item'       => $shp_item,
+    'shp_type'       => $shp_type,
+    'payment_status' => 'active',
   ))->execute();
   return $id;
 }
@@ -211,28 +212,33 @@ function mgc_update_enrollment($inv_id, $status = 'paid') {
   ))->condition('inv_id', $inv_id)->execute();
 }
 
+function mgc_update_enrollment_status($inv_id, $payment_status) {
+  db_update('mgc_payment_order')->fields(array(
+    'payment_status' => $payment_status,
+  ))->condition('inv_id', $inv_id)->execute();
+}
+
 function mgc_get_paid_enrollments($user_id) {
-  $query  = db_select('mgc_payment_order', 'm')
-    ->fields('m', array('enrolled', 'amount', 'inv_id', 'paid_days', 'shp_type'))
+  $query = db_select('mgc_payment_order', 'm')
+    ->fields('m', array('enrolled', 'amount', 'inv_id', 'paid_days', 'shp_type', 'payment_status'))
     ->condition('uid', $user_id, '=')//->orderBy('enrolled', 'DESC')
     ->condition('status', 'paid', '=')//->orderBy('enrolled', 'DESC')
+    //->condition('payment_status', 'active', '=')//->orderBy('enrolled', 'DESC')
     ->execute();
-  $result = $query->fetchAll();
 
-  return $result;
+  return $query->fetchAll();
 }
 
 function mgc_get_active_enroll($user_id, $shp_type) {
-  $query  = db_select('mgc_payment_order', 'm')//TODO сделать проверку по inv_id из-за вебинаров
-  ->fields('m', array('enrolled', 'paid_days'))
+  $query = db_select('mgc_payment_order', 'm')
+    ->fields('m', array('enrolled', 'paid_days', 'inv_id'))
     ->condition('uid', $user_id, '=')
     ->condition('shp_type', $shp_type, '=')
     ->orderBy('enrolled', 'DESC')
     ->range(0, 1)
     ->execute();
-  $result = $query->fetchAssoc();
 
-  return $result;
+  return $query->fetchAssoc();
 }
 
 function mgc_get_tariff_type($teacher) {
@@ -243,18 +249,37 @@ function mgc_get_tariff_type($teacher) {
 }
 
 function mgc_get_access($user) {
-  $result = mgc_teacher_has_free_access($user);
-  return $result;
+  $free_access    = mgc_teacher_has_free_access($user);
+  $paid_time_left = mgc_get_teacher_paid_time_left($user, 'course');
+
+  return $free_access || $paid_time_left;
 }
 
 function mgc_teacher_has_free_access($user) {
   $result = mgc_get_tariff_type($user);
-  $stop   = 'Stop';
   if (!$result || $result === 'free') {
     return TRUE;
   }
   else {
     return FALSE;
   }
+}
 
+function mgc_get_teacher_paid_time_left($user, $shp_type) {
+  $time = mgc_get_active_enroll($user->uid, $shp_type);
+  $stop = 'Stop';
+  if ($time) {
+    /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
+    $diff_seconds = $time['enrolled'] + $time['paid_days'] * 24 * 60 * 60 - time();
+    if ($diff_seconds > 0) {
+      mgc_update_enrollment_status($time['inv_id'], 'active');
+      return array(
+        'left_seconds' => $diff_seconds,
+        'enrolled'     => $time['enrolled'],
+        'paid_days'    => $time['paid_days'],
+      );
+    }
+    mgc_update_enrollment_status($time['inv_id'], 'expired');
+    return FALSE;
+  }
 }

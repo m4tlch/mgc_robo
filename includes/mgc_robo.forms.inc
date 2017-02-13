@@ -278,19 +278,33 @@ function mgc_robo_set_tariff_form($form, $form_state, $teacher) {
   $courses_qty = $courses_qty ? : '0';
   $tariff      = mgc_get_tariff($teacher, $courses_qty);
   $tariff_type = mgc_get_tariff_type($teacher);
+  $stop        = 'Stop';
   if (!$tariff_type) {
-    $tariff_type = 'free';
+    $tariff_type = 'trial';
   }
-  $form['name']                   = array(
+  $form['name']   = array(
     '#type'        => 'fieldset',
     '#title'       => $teacher->name . " ($teacher->mail)",
     '#collapsible' => TRUE,
     '#collapsed'   => FALSE,
   );
+  $trial_status   = mgc_get_trial_access_status($teacher);
+  $trial_override = mgc_get_trial_override_status($teacher);
+  if ($trial_status === 'blocked') {
+    if ($trial_override === 'no changes') {
+      $tariff_type = 'paid';
+    }
+    $trial_status = '(закончился)';
+  }
+  else {
+    $trial_status = '(активен)';
+  }
   $options                        = array(
-    'free' => t('Бесплатный доступ'),
-    'paid' => t('Платный доступ'),
+    'trial' => t('Тестовый доступ ' . $trial_status),
+    'free'  => t('Бесплатный доступ'),
+    'paid'  => t('Платный доступ'),
   );
+  $stop                           = 'Stop';
   $form['name']['tariff_type']    = array(
     '#type'          => 'radios',
     '#title'         => t('Тип доступа'),
@@ -341,15 +355,32 @@ function mgc_robo_set_tariff_form_validate($form, &$form_state) {
   }
 }
 
+function mgc_robo_form_alter(&$form, &$form_state) {
+
+  if ($form['#id'] === 'mgc-robo-set-tariff-form') {
+    $form['#after_build'][] = 'mgc_robo_form_after_build';
+  }
+}
+
+function mgc_robo_form_after_build(&$form, &$form_state) {
+  $form['name']['tariff_type']['trial']['#attributes']['class']    = array('disabled');
+  $form['name']['tariff_type']['trial']['#attributes']['disabled'] = 'disabled';
+  return $form;
+}
+
 function mgc_robo_set_tariff_form_submit($form, &$form_state) {
   $user   = $form_state['build_info']['args'][0];
   $tariff = $form_state['input']['new_tariff'] !== '' ? $form_state['input']['new_tariff'] : $form_state['input']['default_tariff'];
+  $stop   = 'Stop';
   db_merge('mgc_tariff_override')->key(array('user_id' => $user->uid))->fields(array(
     'tariff'      => $tariff,
     'tariff_type' => $form_state['input']['tariff_type'],
     'created'     => REQUEST_TIME,
   ))->execute();
-  drupal_set_message('Form submitted');
+  if ($form_state['input']['tariff_type'] !== 'trial') {
+    mgc_update_trial_access($user, 'blocked', 'manual');
+  }
+  drupal_set_message('Тариф сохранен');
 }
 
 
@@ -450,7 +481,7 @@ function mgc_create_robo_enrollment_ajax($form, $form_state) {
     $shp_type = 'course';
   }
 
-  mgc_create_new_enrollment($user_id, $status, $amount, $enrolled, $created, $form_state['values']['InvId'], $paid_days,
+  mgc_set_new_enrollment($user_id, $status, $amount, $enrolled, $created, $form_state['values']['InvId'], $paid_days,
     $form_state['values']['Shp_item'], $shp_type);
 
   ctools_include('ajax');

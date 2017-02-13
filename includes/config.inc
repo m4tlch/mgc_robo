@@ -11,5 +11,6 @@ define('MGC_FEEDBACK_MAIL', '821olgazotova@gmail.com');
 define('MGC_COURSE1_TARIFF_SHP_ITEM', '1');
 define('MGC_COURSE2_TARIFF_SHP_ITEM', '2');
 define('MGC_WEBINAR_TARIFF_SHP_ITEM', '3');
+define('MGC_TRIAL_TIME_DAYS', '1');
 
 

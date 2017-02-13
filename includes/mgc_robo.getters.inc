@@ -152,7 +152,6 @@ type=hidden name=IncCurrLabel value=$in_curr>" . "<input type=hidden name=Cultur
 }
 
 function mgc_get_signature() {
-
   if (isset($_POST['inv_id'], $_POST['out_summ'], $_POST['shp_item'])) {
     $out_summ  = $_POST['out_summ'] . '.00';
     $inv_id    = $_POST['inv_id'];
@@ -177,45 +176,6 @@ function mgc_get_new_order_id($user_id, $status = 'pending') {
     'status'  => $status,
   ))->execute();
   return $id;
-}
-
-function mgc_create_new_enrollment(
-  $user_id,
-  $status,
-  $amount,
-  $enrolled,
-  $created,
-  $inv_id,
-  $paid_days,
-  $shp_item,
-  $shp_type
-) {
-  $id = db_insert('mgc_payment_order')->fields(array(
-    'uid'            => $user_id,
-    'status'         => $status,
-    'amount'         => $amount,
-    'enrolled'       => $enrolled,
-    'created'        => $created,
-    'inv_id'         => $inv_id,
-    'paid_days'      => $paid_days,
-    'shp_item'       => $shp_item,
-    'shp_type'       => $shp_type,
-    'payment_status' => 'active',
-  ))->execute();
-  return $id;
-}
-
-function mgc_update_enrollment($inv_id, $status = 'paid') {
-  db_update('mgc_payment_order')->fields(array(
-    'status'   => $status,
-    'enrolled' => time(),
-  ))->condition('inv_id', $inv_id)->execute();
-}
-
-function mgc_update_enrollment_status($inv_id, $payment_status) {
-  db_update('mgc_payment_order')->fields(array(
-    'payment_status' => $payment_status,
-  ))->condition('inv_id', $inv_id)->execute();
 }
 
 function mgc_get_paid_enrollments($user_id) {
@@ -249,15 +209,28 @@ function mgc_get_tariff_type($teacher) {
 }
 
 function mgc_get_access($user) {
+
   $free_access    = mgc_teacher_has_free_access($user);
+  $trial_access   = mgc_teacher_has_trial_access($user);
   $paid_time_left = mgc_get_teacher_paid_time_left($user, 'course');
 
-  return $free_access || $paid_time_left;
+  return $free_access || $paid_time_left || $trial_access;
 }
 
 function mgc_teacher_has_free_access($user) {
   $result = mgc_get_tariff_type($user);
-  if (!$result || $result === 'free') {
+  if ($result === 'free') {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function mgc_teacher_has_trial_access($user) {
+  $result = mgc_get_trial_access_status($user);
+  $stop   = 'Stop';
+  if (!$result || $result === 'active') {
     return TRUE;
   }
   else {
@@ -282,4 +255,23 @@ function mgc_get_teacher_paid_time_left($user, $shp_type) {
     mgc_update_enrollment_status($time['inv_id'], 'expired');
     return FALSE;
   }
+}
+
+function mgc_get_trial_access_status($user) {
+  mgc_update_trial_access($user);
+  $query = db_select('mgc_trial_access', 'mta')->fields('mta', array('status'))->condition('uid', $user->uid, '=');
+  return $query->execute()->fetchField();
+}
+
+function mgc_get_trial_override_status($user) {
+  mgc_update_trial_access($user);
+  $query = db_select('mgc_trial_access', 'mta')->fields('mta', array('override'))->condition('uid', $user->uid, '=');
+  return $query->execute()->fetchField();
+}
+
+function mgc_get_trial_access_time($user) {
+  $query = db_select('mgc_trial_access', 'mta')
+    ->fields('mta', array('status', 'created', 'updated'))
+    ->condition('uid', $user->uid, '=');
+  return $query->execute()->fetchAssoc();
 }

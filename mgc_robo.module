@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/config.inc';
 require_once __DIR__ . '/includes/mgc_robo.forms.inc';
 require_once __DIR__ . '/includes/mgc_robo.admin.inc';
 require_once __DIR__ . '/includes/mgc_robo.getters.inc';
+require_once __DIR__ . '/includes/mgc_robo.setters.inc';
 require_once __DIR__ . '/includes/mgc_robo.helpers.inc';
 require_once __DIR__ . '/includes/mgc_robo.pages.inc';
 require_once __DIR__ . '/includes/mgc_robo.payment.inc';
@@ -180,7 +181,6 @@ function mgc_robo_init() {
   $current_path = drupal_get_path_alias();
 
   $seconds = mgc_get_teacher_paid_time_left($user, 'course');
-  $stop    = 'Stop';
   if ($seconds) {
     $days = floor($seconds['left_seconds'] / 86400);
     if ($seconds['left_seconds'] > 0 && $days <= 3) {
@@ -189,8 +189,18 @@ function mgc_robo_init() {
   }
 
   $stop = 'Stop';
-  if (!($current_path === 'front_page') && !($current_path === 'robo/payment') && !(arg(0) === 'robo' && arg(1) === 'user') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
+  if (!($current_path === 'front_page') && !($current_path === 'robo/payment') && !(arg(0) === 'robo' && arg(1) === 'user') && !(arg(0) === 'user' && arg(1) === 'logout') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
     drupal_access_denied();
     drupal_exit();
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function mgc_robo_user_insert(&$edit, $account, $category) {
+  $stop = 'Stop';
+  if (isset($account->roles[6]) && $account->roles[6] === '6') {
+    mgc_set_trial_access($account);
   }
 }

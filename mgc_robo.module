@@ -102,6 +102,13 @@ function mgc_robo_menu() {
     'access arguments'  => ['view robo paid'],
     'delivery callback' => 'drupal_json_output',
   );
+  $items['webinars']                   = array(
+    'title'            => 'Вебинары',
+    'page callback'    => 'mgc_robo_webinar_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo paid'],
+    'type'             => MENU_CALLBACK,
+  );
 
 
   return $items;
@@ -153,6 +160,11 @@ function mgc_robo_theme() {
         'teacher' => new stdClass(),
       ),
     ),
+    'mgc_robo_webinar_page'         => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-webinar-page',
+      'variables' => array(),
+    ),
 
   );
 }
@@ -182,14 +194,18 @@ function mgc_robo_init() {
 
   $seconds = mgc_get_teacher_paid_time_left($user, 'course');
   if ($seconds) {
+    /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
     $days = floor($seconds['left_seconds'] / 86400);
     if ($seconds['left_seconds'] > 0 && $days <= 3) {
       drupal_set_message('Оплаченного времени осталось: ' . mgc_time_diff($seconds));
     }
   }
-
-  $stop = 'Stop';
   if (!($current_path === 'front_page') && !($current_path === 'robo/payment') && !(arg(0) === 'robo' && arg(1) === 'user') && !(arg(0) === 'user' && arg(1) === 'logout') && (!mgc_get_access($user) && arg(0) !== 'r4032login')) {
+    drupal_access_denied();
+    drupal_exit();
+  }
+  $stop = 'Stop';
+  if ($current_path === 'webinars' && !mgc_get_webinars_access($user) && arg(0) !== 'r4032login') {
     drupal_access_denied();
     drupal_exit();
   }

@@ -217,6 +217,13 @@ function mgc_get_access($user) {
   return $free_access || $paid_time_left || $trial_access;
 }
 
+function mgc_get_webinars_access($user) {
+  $paid_course_time_left = mgc_get_teacher_paid_time_left($user, 'course');
+  $paid_tariff_time_left = mgc_get_teacher_paid_time_left($user, 'webinar');
+
+  return $paid_course_time_left && $paid_tariff_time_left;
+}
+
 function mgc_teacher_has_free_access($user) {
   $result = mgc_get_tariff_type($user);
   if ($result === 'free') {
@@ -240,7 +247,6 @@ function mgc_teacher_has_trial_access($user) {
 
 function mgc_get_teacher_paid_time_left($user, $shp_type) {
   $time = mgc_get_active_enroll($user->uid, $shp_type);
-  $stop = 'Stop';
   if ($time) {
     /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
     $diff_seconds = $time['enrolled'] + $time['paid_days'] * 24 * 60 * 60 - time();

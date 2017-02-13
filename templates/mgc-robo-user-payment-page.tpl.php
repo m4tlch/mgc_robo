@@ -20,11 +20,11 @@
                 <dt> Осталось оплаченного времени</dt>
                 <dd>
                   <?php
-                  if (mgc_get_trial_access_status($user) === 'active') {
+                  $time_left = mgc_get_teacher_paid_time_left($user, 'course');
+                  if (!$time_left && mgc_get_trial_access_status($user) === 'active') {
                     print 'У вас тестовый период';
                   }
                   else {
-                    $time_left = mgc_get_teacher_paid_time_left($user, 'course');
                     if ($time_left && $time_left['left_seconds'] > 0) {
                       print  mgc_time_diff($time_left);
                     }

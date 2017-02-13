@@ -38,3 +38,7 @@ function mgc_robo_set_tariff_page($teacher) {
     'teacher' => $teacher,
   ));
 }
+
+function mgc_robo_webinar_page() {
+  return theme('mgc_robo_webinar_page', array());
+}

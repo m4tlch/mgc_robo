@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/pruffmelab.api.inc';
 function mgc_stats_teachers_page() {
   return theme('mgc_stats_teachers_page_theme',
     array(// 'image_path' => drupal_get_path('module', 'mgc_robo') . '/images/',

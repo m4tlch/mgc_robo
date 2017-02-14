@@ -1,38 +1,21 @@
 <?php
 
-/*
- * Код партнера:9acd77b617baa86c23c46c323a54e3e9
-   Ключ партнера: d997a29401b7b938bbbae1af53e3bc57
-*/
-
-$content = (object) array(
-  "limit"  => 2,
-  "offset" => 0,
+/*$user_params = array(
+  'id'         => -1,
+  'login'      => 'test@test.com',
+  'short_name' => 'mgc_test',
+  'name'       => 'Aloiz',
+  'surname'    => 'Komershaft',
+  'password'   => '1',
+  'admin'      => '0',
+  'maximum'    => '2',
+  'tariff'     => MGC_PRUFFMELAB_TARIFF_WITH_VIDEO,
 );
-$encoded = json_encode($content);
-$base    = base64_encode($encoded);
 
-$params     = array(
-  "partner" => "9acd77b617baa86c23c46c323a54e3e9",
-  "key"     => "d997a29401b7b938bbbae1af53e3bc57",
-  "action"  => "users-list",
-  "content" => $base,
-);
-$postFields = http_build_query($params);
+$stop = _pruffmelab_api_users_edit($user_params);   */
 
-
-$server = "https://pruffmelab.com/engine/api/";
-$curl   = curl_init($server);
-curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0");
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-curl_setopt($curl, CURLOPT_HEADER, 0);
-curl_setopt($curl, CURLOPT_POST, TRUE);
-/** @noinspection CurlSslServerSpoofingInspection */
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
-curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-$result = curl_exec($curl);
-
-$json = json_decode($result);
-
+//$stop = _pruffmelab_api_webinars_edit(-1, 116141, 'mgc_test_webinar2', 'WEBINAR ALLLLLO2');
+//$stop = _pruffmelab_api_webinars_delete('5b430177299a74b6d82c25cf53ea8b7a');
+//$stop = _pruffmelab_api_webinars_set_moderators('c57d0c1eeb24bdf273acc8b96e40f35f', array('123831'));
+$stop = _pruffmelab_api_medias_list(MGC_PRUFFMELAB_LIMIT, 0, -1, 'c57d0c1eeb24bdf273acc8b96e40f35f');
 $stop = 'Stop';

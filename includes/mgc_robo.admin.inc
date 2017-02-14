@@ -206,4 +206,73 @@ function mgc_robo_config_admin_form_submit($form, &$form_state) {
   drupal_set_message('настройки обновлены');
 }
 
+/*Pruffmelab*/
+
+function mgc_pruffmelab_config_admin_form($form, &$form_state) {
+
+  $form['settings'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Настройки pruffmelab'),
+    '#collapsible' => TRUE,
+    '#collapsed'   => FALSE,
+  );
+
+  $form['settings']['pruffmelab_partner_code'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Код партнера'),
+    '#default_value' => variable_get('pruffmelab_partner_code', '9acd77b617baa86c23c46c323a54e3e9'),
+    '#required'      => TRUE,
+  );
+
+  $form['settings']['pruffmelab_partner_key'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Ключ партнера'),
+    '#default_value' => variable_get('pruffmelab_partner_key', 'd997a29401b7b938bbbae1af53e3bc57'),
+    '#required'      => TRUE,
+  );
+
+  $form['settings']['pruffmelab_server'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Сервер'),
+    '#default_value' => variable_get('pruffmelab_server', 'https://pruffmelab.com/engine/api/'),
+    '#required'      => TRUE,
+  );
+
+  $form['settings']['pruffmelab_user_agent'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('user agent для curl'),
+    '#default_value' => variable_get('pruffmelab_user_agent', 'Mozilla/4.0'),
+    '#required'      => TRUE,
+  );
+
+  $form['settings']['pruffmelab_limit'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Лимит выдачи запроса'),
+    '#default_value' => variable_get('pruffmelab_limit', 500),
+    '#required'      => TRUE,
+  );
+
+  $form['actions']['save'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Сохранить'),
+  );
+
+
+  return $form;
+}
+
+function mgc_pruffmelab_config_admin_form_validate($form, &$form_state) {
+
+}
+
+function mgc_pruffmelab_config_admin_form_submit($form, &$form_state) {
+
+  variable_set('pruffmelab_partner_code', $form_state['input']['pruffmelab_partner_code']);
+  variable_set('pruffmelab_partner_key', $form_state['input']['pruffmelab_partner_key']);
+  variable_set('pruffmelab_server', $form_state['input']['pruffmelab_server']);
+  variable_set('pruffmelab_user_agent', $form_state['input']['pruffmelab_user_agent']);
+  variable_set('pruffmelab_limit', $form_state['input']['pruffmelab_limit']);
+
+  drupal_set_message('настройки обновлены');
+}
 

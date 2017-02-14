@@ -45,7 +45,8 @@ function mgc_set_new_enrollment(
   $inv_id,
   $paid_days,
   $shp_item,
-  $shp_type
+  $shp_type,
+  $webinar_type
 ) {
   $id = db_insert('mgc_payment_order')->fields(array(
     'uid'            => $user_id,
@@ -57,6 +58,7 @@ function mgc_set_new_enrollment(
     'paid_days'      => $paid_days,
     'shp_item'       => $shp_item,
     'shp_type'       => $shp_type,
+    'webinar_type'   => $webinar_type,
     'payment_status' => 'active',
   ))->execute();
   return $id;

@@ -1,4 +1,5 @@
 <?php
+define('MGC_ROBO_DEV', TRUE);
 define('MGC_TEACHERS_CACHE_EXPIRE', 2 * 60 * 60);
 define('MGC_ROBOKASSA_MRCH_LOGIN', 'rewrite');
 define('MGC_ROBOKASSA_MRCH_PASS1', 'wd3X3s4jTgG1EynGafF7');
@@ -13,13 +14,13 @@ define('MGC_COURSE2_TARIFF_SHP_ITEM', '2');
 define('MGC_WEBINAR_TARIFF_SHP_ITEM', '3');
 define('MGC_TRIAL_TIME_DAYS', '1');
 /*PRUFFMELAB CONFIG*/
-define('MGC_PRUFFMELAB_SERVER', 'https://pruffmelab.com/engine/api/');
-define('MGC_PRUFFMELAB_USER_AGENT', 'Mozilla/4.0');
-define('MGC_PRUFFMELAB_PARTNER_CODE', '9acd77b617baa86c23c46c323a54e3e9');
-define('MGC_PRUFFMELAB_PARTNER_KEY', 'd997a29401b7b938bbbae1af53e3bc57');
+define('MGC_PRUFFMELAB_SERVER', variable_get('pruffmelab_server'));
+define('MGC_PRUFFMELAB_USER_AGENT', variable_get('pruffmelab_user_agent'));
+define('MGC_PRUFFMELAB_PARTNER_CODE', variable_get('pruffmelab_partner_code'));
+define('MGC_PRUFFMELAB_PARTNER_KEY', variable_get('pruffmelab_partner_key'));
 define('MGC_PRUFFMELAB_TARIFF_WITH_VIDEO', 1);
 define('MGC_PRUFFMELAB_TARIFF_WITHOUT_VIDEO', 0);
-define('MGC_PRUFFMELAB_LIMIT', 1000);
+define('MGC_PRUFFMELAB_LIMIT', variable_get('pruffmelab_limit'));
 
 define('MGC_PRUFFMELAB_WEBINAR_SORTING_BY_ACTIVITY', 0);
 define('MGC_PRUFFMELAB_WEBINAR_SORTING_BY_CREATED', 1);

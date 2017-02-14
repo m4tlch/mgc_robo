@@ -390,7 +390,6 @@ function mgc_ajax_callback($form, &$form_state) {
 }
 
 function mgc_robokassa_merchantform($form, &$form_state) {
-
   global $user;
   // generate signature
 
@@ -447,6 +446,11 @@ function mgc_robokassa_merchantform($form, &$form_state) {
     '#value' => 1,
   );
 
+  $form['WebinarType'] = array(
+    '#type'  => 'hidden',
+    '#value' => 'not-webinar',
+  );
+
   $form['submit'] = array(
     '#type'       => 'submit',
     '#value'      => t('Оплатить'),
@@ -467,10 +471,12 @@ function mgc_robokassa_merchantform($form, &$form_state) {
 function mgc_create_robo_enrollment_ajax($form, $form_state) {
   global $user;
 
-  $user_id   = $user->uid;
-  $status    = 'pending';
-  $amount    = $form_state['input']['OutSum'];
-  $month_qty = $form_state['input']['Months_Qty'];
+  $user_id      = $user->uid;
+  $status       = 'pending';
+  $amount       = $form_state['input']['OutSum'];
+  $month_qty    = $form_state['input']['Months_Qty'];
+  $webinar_type = $form_state['input']['WebinarType'];
+
   $paid_days = $month_qty * (int) variable_get('tariff_days_qty');
   $enrolled  = time();
   $created   = $enrolled;
@@ -482,7 +488,7 @@ function mgc_create_robo_enrollment_ajax($form, $form_state) {
   }
 
   mgc_set_new_enrollment($user_id, $status, $amount, $enrolled, $created, $form_state['values']['InvId'], $paid_days,
-    $form_state['values']['Shp_item'], $shp_type);
+    $form_state['values']['Shp_item'], $shp_type, $webinar_type);
 
   ctools_include('ajax');
   ctools_add_js('ajax-responder');

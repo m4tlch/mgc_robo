@@ -140,7 +140,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox"><input type="checkbox"
                                                         name="option1checkBox"
-                                                        id="option1checkBox"
+                                                        id="option1checkBox" data-webinar-type="tariff_free"
                                                         value="0"> <label
                                 for="option1checkBox"></label></div>
                 </div>
@@ -155,7 +155,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox"><input type="checkbox"
                                                         name="option2checkBox"
-                                                        id="option2checkBox"
+                                                        id="option2checkBox" data-webinar-type="tariff_alpha"
                                                         value="<?= variable_get('tariff_alpha', 1000) ?>"> <label
                                 for="option2checkBox"></label></div>
                 </div>
@@ -170,7 +170,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox"><input type="checkbox"
                                                         name="option3checkBox"
-                                                        id="option3checkBox"
+                                                        id="option3checkBox" data-webinar-type="tariff_beta"
                                                         value="<?= variable_get('tariff_beta', 2000) ?>"> <label
                                 for="option3checkBox"></label></div>
                 </div>
@@ -186,7 +186,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox"><input type="checkbox"
                                                         name="option4checkBox"
-                                                        id="option4checkBox"
+                                                        id="option4checkBox" data-webinar-type="tariff_gamma_alpha"
                                                         value="<?= variable_get('tariff_gamma_alpha', 4000) ?>"> <label
                                 for="option4checkBox"></label></div>
                 </div>
@@ -201,7 +201,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox"><input type="checkbox"
                                                         name="option5checkBox"
-                                                        id="option5checkBox"
+                                                        id="option5checkBox" data-webinar-type="tariff_gamma_plus"
                                                         value="<?= variable_get('tariff_gamma_plus', 6000) ?>"> <label
                                 for="option5checkBox"></label></div>
                 </div>
@@ -217,7 +217,7 @@ name="op" value="Оплатить">Оплатить</button></div>';
                     </div>
                     <div class="column-checkbox column-6"><input
                                 type="checkbox" name="option6checkBox"
-                                id="option6checkBox"
+                                id="option6checkBox" data-webinar-type="tariff_gamma_plus_plus"
                                 value="<?= variable_get('tariff_gamma_plus_plus', 8000) ?>"> <label
                                 for="option6checkBox"></label></div>
                 </div>

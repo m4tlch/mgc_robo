@@ -193,6 +193,11 @@ function mgc_robo_schema() {
         'length'   => 255,
         'not null' => TRUE,
       ),
+      'webinar_type'   => array(
+        'type'     => 'varchar',
+        'length'   => 255,
+        'not null' => TRUE,
+      ),
 
     ),
     'primary key' => array('id'),

@@ -4,7 +4,7 @@
       //mgc_update_enrollment(46, 'fail');
       // регистрационная информация (пароль #2)
       // registration info (password #2)
-      $mrh_pass2 = "esRsoA40223cijAyOUkt";
+      $mrh_pass2 = variable_get('robo_payment_test_password_2');
 
       //установка текущего времени
       //current date

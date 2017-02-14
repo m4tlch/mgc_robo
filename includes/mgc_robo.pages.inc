@@ -40,5 +40,19 @@ function mgc_robo_set_tariff_page($teacher) {
 }
 
 function mgc_robo_webinar_page() {
+  drupal_add_css(drupal_get_path('module', 'mgc_robo') . '/css/mgc-robo.css');
+  drupal_add_js(drupal_get_path('module', 'mgc_robo') . '/js/mgc-robo-webinar.js');
   return theme('mgc_robo_webinar_page', array());
+}
+
+function mgc_robo_webinar_test_page() {
+  drupal_add_css(drupal_get_path('module', 'mgc_robo') . '/css/mgc-robo.css');
+  drupal_add_js(drupal_get_path('module', 'mgc_robo') . '/js/mgc-robo-test-page.js');
+  return theme('mgc_robo_webinar_test_page', array());
+}
+
+function mgc_robo_webinar_test2_page() {
+  drupal_add_css(drupal_get_path('module', 'mgc_robo') . '/css/mgc-robo.css');
+  drupal_add_js(drupal_get_path('module', 'mgc_robo') . '/js/mgc-robo-test2-page.js');
+  return theme('mgc_robo_webinar_test2_page', array());
 }

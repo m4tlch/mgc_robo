@@ -70,21 +70,21 @@ function mgc_robo_menu() {
     'title'            => 'Ошибка оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_fail_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo gateway'],
+    'access arguments' => ['view robo anon'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/result']        = array(
     'title'            => 'Результат оплаты в Робокассе',
     'page callback'    => 'mgc_robo_payment_result_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo gateway'],
+    'access arguments' => ['view robo anon'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/payment/success']       = array(
     'title'            => 'Оплата в Робокассе успешна',
     'page callback'    => 'mgc_robo_payment_success_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo gateway'],
+    'access arguments' => ['view robo anon'],
     'type'             => MENU_CALLBACK,
   );
   $items['robo/user/%user']            = array(
@@ -106,7 +106,21 @@ function mgc_robo_menu() {
     'title'            => 'Вебинары',
     'page callback'    => 'mgc_robo_webinar_page',
     'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo paid'],
+    'access arguments' => ['view robo anon'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['webinars/test']              = array(
+    'title'            => 'Тест вебинара',
+    'page callback'    => 'mgc_robo_webinar_test_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo anon'],
+    'type'             => MENU_CALLBACK,
+  );
+  $items['webinars/test2']              = array(
+    'title'            => 'Тест вебинара2',
+    'page callback'    => 'mgc_robo_webinar_test2_page',
+    'access callback'  => 'mgc_robo_access',
+    'access arguments' => ['view robo anon'],
     'type'             => MENU_CALLBACK,
   );
 
@@ -165,6 +179,16 @@ function mgc_robo_theme() {
       'template'  => 'mgc-robo-webinar-page',
       'variables' => array(),
     ),
+    'mgc_robo_webinar_test_page'    => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-webinar-test-page',
+      'variables' => array(),
+    ),
+    'mgc_robo_webinar_test2_page'    => array(
+      'path'      => $path,
+      'template'  => 'mgc-robo-webinar-test2-page',
+      'variables' => array(),
+    ),
 
   );
 }
@@ -181,7 +205,7 @@ function mgc_robo_access($op) {
     case 'view robo free':
       return mgc_user_has_teacher_role();
       break;
-    case 'view robo gateway':
+    case 'view robo anon':
       return TRUE;
       break;
   }
@@ -206,8 +230,8 @@ function mgc_robo_init() {
   }
   $stop = 'Stop';
   if ($current_path === 'webinars' && !mgc_get_webinars_access($user) && arg(0) !== 'r4032login') {
-    drupal_access_denied();
-    drupal_exit();
+//    drupal_access_denied();
+//    drupal_exit();
   }
 }
 

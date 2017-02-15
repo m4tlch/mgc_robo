@@ -480,7 +480,7 @@ function mgc_create_robo_enrollment_ajax($form, $form_state) {
   $paid_days = $month_qty * (int) variable_get('tariff_days_qty');
   $enrolled  = time();
   $created   = $enrolled;
-  if ($form_state['values']['Shp_item'] == MGC_WEBINAR_TARIFF_SHP_ITEM) {
+  if ($form_state['values']['Shp_item'] === MGC_WEBINAR_TARIFF_SHP_ITEM) {
     $shp_type = 'webinar';
   }
   else {

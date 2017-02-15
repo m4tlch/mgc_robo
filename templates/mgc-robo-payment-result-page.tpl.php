@@ -1,9 +1,6 @@
 <div class="row">
     <div class="col-md-12">
       <?php
-      //mgc_update_enrollment(46, 'fail');
-      // регистрационная информация (пароль #2)
-      // registration info (password #2)
       $mrh_pass2 = variable_get('robo_payment_test_password_2');
 
       //установка текущего времени
@@ -35,6 +32,7 @@
       // success
       echo "OK$inv_id\n";
       mgc_update_enrollment($inv_id);
+      mgc_create_pruffmelab_webinar($inv_id);
       //mgc_mail('paul.nike@yandex.ru', '$mail_subject2', $inv_id);
       ?>
     </div>

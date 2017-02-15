@@ -76,3 +76,83 @@ function mgc_update_enrollment_status($inv_id, $payment_status) {
     'payment_status' => $payment_status,
   ))->condition('inv_id', $inv_id)->execute();
 }
+
+function mgc_create_pruffmelab_webinar($inv_id) {
+
+  $order = db_select('mgc_payment_order', 'n')
+    ->fields('n', array('uid', 'webinar_type'))
+    ->condition('inv_id', $inv_id, '=')
+    ->execute()
+    ->fetchAssoc();
+  $stop  = 'Stop';
+  if ($order) {
+    $user         = user_load($order['uid']);
+    $webinar_type = $order['webinar_type'];
+
+    switch ($webinar_type) {
+      case 'tariff_free':
+        $user_maximum       = 10;
+        $webinar_with_video = 0;
+        break;
+      case 'tariff_alpha':
+        $user_maximum       = 50;
+        $webinar_with_video = 0;
+        break;
+      case 'tariff_beta':
+        $user_maximum       = 300;
+        $webinar_with_video = 1;
+        break;
+      case 'tariff_gamma_alpha':
+        $user_maximum       = 500;
+        $webinar_with_video = 1;
+        break;
+      case 'tariff_gamma_plus':
+        $user_maximum       = 700;
+        $webinar_with_video = 1;
+        break;
+      case 'tariff_gamma_plus_plus':
+        $user_maximum       = 1000;
+        $webinar_with_video = 1;
+        break;
+      default:
+        $user_maximum       = 10;
+        $webinar_with_video = 0;
+        break;
+    }
+    $result = mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, FALSE);
+    /*Если есть уже на платформе, повторяем запрос, но уже с айдишником*/
+    if (isset($result->error->additional)) {
+      $result = mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, $result->error->additional);
+    }
+    if ($result->result->user->id) {
+
+      $pruffmelab_id      = $result->result->user->id;
+      $webinar_short_name = 'rewrite_webinar_' . $pruffmelab_id;
+      $webinar_name       = 'Rewrite webinar for user ' . $pruffmelab_id;
+      $webinars_list      = _pruffmelab_api_webinars_list(MGC_PRUFFMELAB_LIMIT, 0, $pruffmelab_id,
+        MGC_PRUFFMELAB_WEBINAR_SORTING_BY_ACTIVITY);
+      if (empty($webinars_list->result)) {
+        _pruffmelab_api_webinars_edit(-1, $pruffmelab_id, $webinar_short_name, $webinar_name);
+      }
+
+    }
+  }
+
+}
+
+function mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, $pruffmelab_id) {
+
+  $user_params = array(
+    'id'         => $pruffmelab_id ? : -1,
+    'login'      => $user->mail,
+    'short_name' => 'rewrite' . $user->uid,
+    'name'       => $user->name ? : 'noname' . $user->uid,
+    'surname'    => 'nosurname' . $user->uid,
+    //TODO   user_pass()
+    'password'   => '1',
+    'admin'      => '0',
+    'maximum'    => $user_maximum,
+    'tariff'     => $webinar_with_video,
+  );
+  return _pruffmelab_api_users_edit($user_params);
+}

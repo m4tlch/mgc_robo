@@ -30,6 +30,9 @@ $stop = 'Stop';
         </div>
     </div>
 </div>
+<script>
+    var $ = jQuery.noConflict();
+</script>
 <script src="https://pruffmelab.com/engine/api/js/library.js"></script>
 <script src="https://pruffmelab.com/webinar/loader.js"></script>
 <script>

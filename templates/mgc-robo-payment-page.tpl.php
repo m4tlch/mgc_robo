@@ -259,10 +259,10 @@ name="op" value="Оплатить">Оплатить</button></div>';
         </div>
     </div>
 </div>
-<!--<link rel="stylesheet" type="text/css"-->
-<!--      href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>-->
-<!--<script type="text/javascript"-->
-<!--        src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>-->
+<link rel="stylesheet" type="text/css"
+      href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+<script type="text/javascript"
+        src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 <?php
 //drupal_add_css(drupal_get_path('theme',
 //    'ditoolsi') . '/css/jquery.bxslider.css', 'file');

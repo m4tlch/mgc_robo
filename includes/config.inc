@@ -1,5 +1,6 @@
 <?php
 define('MGC_ROBO_DEV', TRUE);
+
 define('MGC_TEACHERS_CACHE_EXPIRE', 2 * 60 * 60);
 define('MGC_ROBOKASSA_MRCH_LOGIN', 'rewrite');
 define('MGC_ROBOKASSA_MRCH_PASS1', 'wd3X3s4jTgG1EynGafF7');

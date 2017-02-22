@@ -11,7 +11,11 @@ function mgc_set_trial_access($user) {
   return $id;
 }
 
-function mgc_update_trial_access($user, $status = 'active', $override = 'no changes') {
+function mgc_update_trial_access(
+  $user,
+  $status = 'active',
+  $override = 'no changes'
+) {
   $time    = mgc_get_trial_access_time($user);
   $created = $time['created'];
   /** @noinspection SummerTimeUnsafeTimeManipulationInspection */
@@ -119,28 +123,34 @@ function mgc_create_pruffmelab_webinar($inv_id) {
         $webinar_with_video = 0;
         break;
     }
-    $result = mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, FALSE);
+    $result = mgc_create_pruffmelab_user($user, $user_maximum,
+      $webinar_with_video, FALSE);
     /*Если есть уже на платформе, повторяем запрос, но уже с айдишником*/
     if (isset($result->error->additional)) {
-      $result = mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, $result->error->additional);
+      $result = mgc_create_pruffmelab_user($user, $user_maximum,
+        $webinar_with_video, $result->error->additional);
     }
     if ($result->result->user->id) {
 
       $pruffmelab_id      = $result->result->user->id;
       $webinar_short_name = 'rewrite_webinar_' . $pruffmelab_id;
       $webinar_name       = 'Rewrite webinar for user ' . $pruffmelab_id;
-      $webinars_list      = _pruffmelab_api_webinars_list(MGC_PRUFFMELAB_LIMIT, 0, $pruffmelab_id,
-        MGC_PRUFFMELAB_WEBINAR_SORTING_BY_ACTIVITY);
+      $webinars_list      = _pruffmelab_api_webinars_list(MGC_PRUFFMELAB_LIMIT,
+        0, $pruffmelab_id, MGC_PRUFFMELAB_WEBINAR_SORTING_BY_ACTIVITY);
       if (empty($webinars_list->result)) {
-        _pruffmelab_api_webinars_edit(-1, $pruffmelab_id, $webinar_short_name, $webinar_name);
+        _pruffmelab_api_webinars_edit(-1, $pruffmelab_id, $webinar_short_name,
+          $webinar_name);
       }
-
     }
   }
-
 }
 
-function mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, $pruffmelab_id) {
+function mgc_create_pruffmelab_user(
+  $user,
+  $user_maximum,
+  $webinar_with_video,
+  $pruffmelab_id
+) {
 
   $user_params = array(
     'id'         => $pruffmelab_id ? : -1,
@@ -156,3 +166,5 @@ function mgc_create_pruffmelab_user($user, $user_maximum, $webinar_with_video, $
   );
   return _pruffmelab_api_users_edit($user_params);
 }
+
+

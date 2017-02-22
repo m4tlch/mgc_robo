@@ -114,7 +114,7 @@ function mgc_robo_menu() {
     'delivery callback' => 'drupal_json_output',
   );
   $items['webinars']             = array(
-    'title'            => 'Вебинары',
+    'title'            => '',
     'page callback'    => 'mgc_robo_webinar_page',
     'access callback'  => 'mgc_robo_access',
     'access arguments' => ['view robo anon'],
@@ -127,14 +127,6 @@ function mgc_robo_menu() {
     'access arguments' => ['view robo anon'],
     'type'             => MENU_CALLBACK,
   );
-  $items['webinars/test2']       = array(
-    'title'            => 'Тест вебинара2',
-    'page callback'    => 'mgc_robo_webinar_test2_page',
-    'access callback'  => 'mgc_robo_access',
-    'access arguments' => ['view robo anon'],
-    'type'             => MENU_CALLBACK,
-  );
-
 
   return $items;
 }
@@ -195,12 +187,6 @@ function mgc_robo_theme() {
       'template'  => 'mgc-robo-webinar-test-page',
       'variables' => array(),
     ),
-    'mgc_robo_webinar_test2_page'   => array(
-      'path'      => $path,
-      'template'  => 'mgc-robo-webinar-test2-page',
-      'variables' => array(),
-    ),
-
   );
 }
 
